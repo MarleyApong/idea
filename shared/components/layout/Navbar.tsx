@@ -1,13 +1,13 @@
 import { auth } from "@/shared/lib/auth"
 import { signOutAction } from "@/shared/lib/actions/auth"
 import { getTranslations } from "next-intl/server"
+import { LogOut } from "lucide-react"
 import Link from "next/link"
 import { LocaleSwitcher } from "./LocaleSwitcher"
 
 export async function Navbar({ locale }: { locale: string }) {
   const session = await auth()
   const t = await getTranslations("nav")
-
   const logoutAction = signOutAction.bind(null, locale)
 
   return (
@@ -38,8 +38,9 @@ export async function Navbar({ locale }: { locale: string }) {
               <form action={logoutAction}>
                 <button
                   type="submit"
-                  className="text-sm text-slate-500 hover:text-slate-900 transition-colors"
+                  className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 transition-colors"
                 >
+                  <LogOut className="w-4 h-4" />
                   {t("signOut")}
                 </button>
               </form>

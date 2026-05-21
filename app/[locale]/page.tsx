@@ -1,6 +1,7 @@
 import { auth } from "@/shared/lib/auth"
 import { redirect } from "next/navigation"
 import { getTranslations } from "next-intl/server"
+import { ArrowRight, LogIn } from "lucide-react"
 import Link from "next/link"
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
@@ -20,14 +21,16 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <div className="mt-8 flex gap-3 justify-center">
           <Link
             href={`/${locale}/auth/signin`}
-            className="bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-primary-dark transition-colors"
+            className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-medium hover:bg-primary-dark transition-colors"
           >
+            <ArrowRight className="w-4 h-4" />
             {t("cta")}
           </Link>
           <Link
             href={`/${locale}/auth/signin`}
-            className="border border-slate-200 text-slate-700 px-6 py-3 rounded-lg font-medium hover:bg-slate-50 transition-colors"
+            className="inline-flex items-center gap-2 border border-slate-200 text-slate-700 px-6 py-3 rounded-xl font-medium hover:bg-slate-50 transition-colors"
           >
+            <LogIn className="w-4 h-4" />
             {t("ctaSignIn")}
           </Link>
         </div>

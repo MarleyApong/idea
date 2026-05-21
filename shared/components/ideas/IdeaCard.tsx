@@ -2,19 +2,17 @@
 
 import type { Idea, IdeaStatus } from "@prisma/client"
 import { useTranslations } from "next-intl"
+import { Card, CardBody } from "@/shared/components/ui/Card"
+import { Badge } from "@/shared/components/ui/Badge"
 
-const statusColors: Record<IdeaStatus, string> = {
-  DRAFT: "bg-slate-100 text-slate-600",
-  IN_PROGRESS: "bg-blue-50 text-blue-700",
-  DONE: "bg-green-50 text-green-700",
-  ARCHIVED: "bg-amber-50 text-amber-700",
+const statusVariant: Record<IdeaStatus, "default" | "primary" | "success" | "warning" | "muted"> = {
+  DRAFT: "default",
+  IN_PROGRESS: "primary",
+  DONE: "success",
+  ARCHIVED: "warning",
 }
 
-interface IdeaCardProps {
-  idea: Idea
-}
-
-export function IdeaCard({ idea }: IdeaCardProps) {
+export function IdeaCard({ idea }: { idea: Idea }) {
   const t = useTranslations("ideas")
 
   const statusLabel: Record<IdeaStatus, string> = {
@@ -25,40 +23,35 @@ export function IdeaCard({ idea }: IdeaCardProps) {
   }
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-5 hover:shadow-sm transition-shadow cursor-pointer group">
-      <div className="flex items-start justify-between gap-3 mb-3">
-        <h3 className="font-semibold text-slate-900 text-base leading-snug group-hover:text-primary transition-colors line-clamp-2">
-          {idea.title}
-        </h3>
-        <span
-          className={`shrink-0 text-xs px-2 py-0.5 rounded-full font-medium ${statusColors[idea.status]}`}
-        >
-          {statusLabel[idea.status]}
-        </span>
-      </div>
-
-      {idea.description && (
-        <p className="text-slate-500 text-sm leading-relaxed line-clamp-3 mb-3">
-          {idea.description}
-        </p>
-      )}
-
-      {idea.tags.length > 0 && (
-        <div className="flex flex-wrap gap-1.5 mb-3">
-          {idea.tags.map((tag) => (
-            <span
-              key={tag}
-              className="text-xs px-2 py-0.5 bg-primary/10 text-primary rounded-full"
-            >
-              {tag}
-            </span>
-          ))}
+    <Card hoverable>
+      <CardBody>
+        <div className="flex items-start justify-between gap-3 mb-2">
+          <h3 className="font-semibold text-slate-900 text-base leading-snug line-clamp-2 group-hover:text-primary">
+            {idea.title}
+          </h3>
+          <Badge variant={statusVariant[idea.status]}>
+            {statusLabel[idea.status]}
+          </Badge>
         </div>
-      )}
 
-      <p className="text-xs text-slate-400">
-        {new Date(idea.updatedAt).toLocaleDateString()}
-      </p>
-    </div>
+        {idea.description && (
+          <p className="text-slate-500 text-sm leading-relaxed line-clamp-3 mb-3">
+            {idea.description}
+          </p>
+        )}
+
+        {idea.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mb-3">
+            {idea.tags.map((tag) => (
+              <Badge key={tag} variant="primary">{tag}</Badge>
+            ))}
+          </div>
+        )}
+
+        <p className="text-xs text-slate-400">
+          {new Date(idea.updatedAt).toLocaleDateString()}
+        </p>
+      </CardBody>
+    </Card>
   )
 }
