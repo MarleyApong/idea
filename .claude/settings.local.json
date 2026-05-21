@@ -5,7 +5,10 @@
       "Bash(npm install *)",
       "Bash(node -e \"const {PrismaPg} = require\\('@prisma/adapter-pg'\\); console.log\\(typeof PrismaPg, Object.keys\\(PrismaPg.prototype || {}\\)\\)\")",
       "Bash(npx tsc *)",
-      "Bash(node -e \"require\\('lucide-react'\\); console.log\\('ok'\\)\")"
+      "Bash(node -e \"require\\('lucide-react'\\); console.log\\('ok'\\)\")",
+      "Bash(node -e \"const l = require\\('lucide-react'\\); console.log\\('Github' in l, 'Chrome' in l\\)\")",
+      "Bash(node -e \"const l = require\\('lucide-react'\\); console.log\\('Github:', 'Github' in l, 'Chrome:', 'Chrome' in l\\)\")",
+      "Bash(node -e ' *)"
     ]
   }
 }

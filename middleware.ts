@@ -4,5 +4,7 @@ import { routing } from "@/shared/i18n/routing"
 export default createMiddleware(routing)
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico|icon\\.png|.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico)).*)",
+  ],
 }

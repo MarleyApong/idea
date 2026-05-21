@@ -2,6 +2,7 @@ import { auth } from "@/shared/lib/auth"
 import { redirect } from "next/navigation"
 import { getTranslations } from "next-intl/server"
 import { signInWithGoogle, signInWithGitHub } from "@/shared/lib/actions/auth"
+import { Lightbulb } from "lucide-react"
 
 export default async function SignInPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
@@ -18,8 +19,9 @@ export default async function SignInPage({ params }: { params: Promise<{ locale:
     <div className="min-h-screen flex">
       {/* Left branding panel */}
       <div className="hidden lg:flex w-[480px] bg-primary flex-col justify-between p-12 shrink-0">
-        <div>
-          <span className="text-white text-2xl font-bold tracking-tight">idea.</span>
+        <div className="flex items-center gap-1.5">
+          <Lightbulb className="w-6 h-6 text-white" strokeWidth={2.5} />
+          <span className="font-bold text-xl text-white tracking-tight">idea.</span>
         </div>
 
         <div className="space-y-5">
@@ -53,8 +55,9 @@ export default async function SignInPage({ params }: { params: Promise<{ locale:
       <div className="flex-1 flex items-center justify-center p-8 bg-white">
         <div className="w-full max-w-[360px]">
           {/* Mobile logo */}
-          <div className="lg:hidden mb-10">
-            <span className="text-primary text-2xl font-bold">idea.</span>
+          <div className="lg:hidden mb-10 flex items-center gap-1.5">
+            <Lightbulb className="w-6 h-6 text-primary" strokeWidth={2.5} />
+            <span className="font-bold text-xl text-primary tracking-tight">idea.</span>
           </div>
 
           <div className="mb-8">
