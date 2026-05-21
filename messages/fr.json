@@ -1,0 +1,48 @@
+{
+  "auth": {
+    "signIn": "Se connecter",
+    "signUp": "Creer un compte",
+    "welcomeBack": "Content de vous revoir",
+    "createAccount": "Creer un compte",
+    "continueWithGoogle": "Continuer avec Google",
+    "continueWithGitHub": "Continuer avec GitHub",
+    "noAccount": "Pas encore de compte ?",
+    "haveAccount": "Vous avez deja un compte ?",
+    "signInLink": "Se connecter",
+    "signUpLink": "Creer un compte",
+    "tagline": "Capturez vos idees brillantes avant de les oublier."
+  },
+  "nav": {
+    "myIdeas": "Mes idees",
+    "newIdea": "Nouvelle idee",
+    "signOut": "Se deconnecter",
+    "settings": "Parametres"
+  },
+  "ideas": {
+    "title": "Mes idees",
+    "empty": "Aucune idee pour le moment",
+    "emptyDesc": "Commencez par capturer votre premiere idee brillante.",
+    "addFirst": "Ajouter ma premiere idee",
+    "new": "Nouvelle idee",
+    "draft": "Brouillon",
+    "inProgress": "En cours",
+    "done": "Termine",
+    "archived": "Archive",
+    "createdAt": "Cree le",
+    "updatedAt": "Modifie le",
+    "tags": "Tags",
+    "description": "Description",
+    "titleLabel": "Titre",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "ideaCount": "{count, plural, =0 {0 idee} =1 {1 idee} other {# idees}}"
+  },
+  "home": {
+    "hero": "Ne perdez plus jamais une bonne idee",
+    "heroSub": "Capturez, organisez et retrouvez toutes vos idees innovantes en un seul endroit.",
+    "cta": "Commencer gratuitement",
+    "ctaSignIn": "Se connecter"
+  }
+}

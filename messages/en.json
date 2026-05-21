@@ -1,0 +1,48 @@
+{
+  "auth": {
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "welcomeBack": "Welcome back",
+    "createAccount": "Create an account",
+    "continueWithGoogle": "Continue with Google",
+    "continueWithGitHub": "Continue with GitHub",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "signInLink": "Sign in",
+    "signUpLink": "Sign up",
+    "tagline": "Capture your brilliant ideas before you forget them."
+  },
+  "nav": {
+    "myIdeas": "My ideas",
+    "newIdea": "New idea",
+    "signOut": "Sign out",
+    "settings": "Settings"
+  },
+  "ideas": {
+    "title": "My ideas",
+    "empty": "No ideas yet",
+    "emptyDesc": "Start by capturing your first brilliant idea.",
+    "addFirst": "Add my first idea",
+    "new": "New idea",
+    "draft": "Draft",
+    "inProgress": "In progress",
+    "done": "Done",
+    "archived": "Archived",
+    "createdAt": "Created",
+    "updatedAt": "Updated",
+    "tags": "Tags",
+    "description": "Description",
+    "titleLabel": "Title",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "ideaCount": "{count, plural, =0 {0 ideas} =1 {1 idea} other {# ideas}}"
+  },
+  "home": {
+    "hero": "Never lose a great idea again",
+    "heroSub": "Capture, organize, and retrieve all your innovative ideas in one place.",
+    "cta": "Get started for free",
+    "ctaSignIn": "Sign in"
+  }
+}
