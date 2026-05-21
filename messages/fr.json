@@ -51,7 +51,14 @@
     "typeRappel": "Rappel",
     "typeAutre": "Autre",
     "readMore": "Lire plus",
-    "seeMinus": "Voir moins"
+    "seeMinus": "Voir moins",
+    "searchPlaceholder": "Rechercher une idee...",
+    "allTypes": "Tous les types",
+    "allStatuses": "Tous les statuts",
+    "noResults": "Aucune idee ne correspond a votre recherche.",
+    "clearFilters": "Reinitialiser les filtres",
+    "backToIdeas": "Retour aux idees",
+    "noDescription": "Aucune description."
   },
   "home": {
     "hero": "Ne perdez plus jamais une bonne idee",
