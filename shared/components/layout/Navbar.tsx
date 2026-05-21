@@ -1,5 +1,5 @@
-import { auth } from "@/lib/auth"
-import { signOutAction } from "@/lib/actions/auth"
+import { auth } from "@/shared/lib/auth"
+import { signOutAction } from "@/shared/lib/actions/auth"
 import { getTranslations } from "next-intl/server"
 import Link from "next/link"
 import { LocaleSwitcher } from "./LocaleSwitcher"

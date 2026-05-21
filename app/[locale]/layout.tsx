@@ -3,9 +3,10 @@ import { Poppins } from "next/font/google"
 import { NextIntlClientProvider } from "next-intl"
 import { getMessages } from "next-intl/server"
 import { notFound } from "next/navigation"
-import { routing } from "@/i18n/routing"
+import { routing } from "@/shared/i18n/routing"
 import { SessionProvider } from "next-auth/react"
-import { auth } from "@/lib/auth"
+import { auth } from "@/shared/lib/auth"
+import { QueryProvider } from "@/shared/providers/QueryProvider"
 import "../globals.css"
 
 const poppins = Poppins({
@@ -43,9 +44,11 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
     <html lang={locale} className={`${poppins.variable} h-full`} suppressHydrationWarning>
       <body className="min-h-full flex flex-col font-sans antialiased bg-slate-50 text-slate-900">
         <SessionProvider session={session}>
-          <NextIntlClientProvider messages={messages}>
-            {children}
-          </NextIntlClientProvider>
+          <QueryProvider>
+            <NextIntlClientProvider messages={messages}>
+              {children}
+            </NextIntlClientProvider>
+          </QueryProvider>
         </SessionProvider>
       </body>
     </html>

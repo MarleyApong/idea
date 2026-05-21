@@ -20,6 +20,8 @@
   },
   "ideas": {
     "title": "Mes idees",
+    "titleWithCount": "{count} idee",
+    "titleWithCountPlural": "{count} idees",
     "empty": "Aucune idee pour le moment",
     "emptyDesc": "Commencez par capturer votre premiere idee brillante.",
     "addFirst": "Ajouter ma premiere idee",
@@ -31,13 +33,18 @@
     "createdAt": "Cree le",
     "updatedAt": "Modifie le",
     "tags": "Tags",
+    "tagsHint": "Separes par des virgules",
     "description": "Description",
     "titleLabel": "Titre",
+    "optional": "optionnel",
     "save": "Enregistrer",
     "cancel": "Annuler",
     "delete": "Supprimer",
     "edit": "Modifier",
-    "ideaCount": "{count, plural, =0 {0 idee} =1 {1 idee} other {# idees}}"
+    "saving": "Enregistrement...",
+    "titlePlaceholder": "Ex: App de suivi de lectures...",
+    "descPlaceholder": "Decrivez votre idee...",
+    "tagsPlaceholder": "mobile, saas, IA..."
   },
   "home": {
     "hero": "Ne perdez plus jamais une bonne idee",

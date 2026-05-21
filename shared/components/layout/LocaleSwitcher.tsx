@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter, usePathname } from "next/navigation"
-import { routing } from "@/i18n/routing"
+import { routing } from "@/shared/i18n/routing"
 
 export function LocaleSwitcher({ locale }: { locale: string }) {
   const router = useRouter()

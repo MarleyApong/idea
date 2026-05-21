@@ -1,6 +1,6 @@
 "use server"
 
-import { signIn, signOut } from "@/lib/auth"
+import { signIn, signOut } from "@/shared/lib/auth"
 
 export async function signInWithGoogle(_locale: string, _formData?: FormData) {
   await signIn("google", { redirectTo: `/${_locale}/ideas` })

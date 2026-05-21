@@ -20,6 +20,8 @@
   },
   "ideas": {
     "title": "My ideas",
+    "titleWithCount": "{count} idea",
+    "titleWithCountPlural": "{count} ideas",
     "empty": "No ideas yet",
     "emptyDesc": "Start by capturing your first brilliant idea.",
     "addFirst": "Add my first idea",
@@ -31,13 +33,18 @@
     "createdAt": "Created",
     "updatedAt": "Updated",
     "tags": "Tags",
+    "tagsHint": "Separated by commas",
     "description": "Description",
     "titleLabel": "Title",
+    "optional": "optional",
     "save": "Save",
     "cancel": "Cancel",
     "delete": "Delete",
     "edit": "Edit",
-    "ideaCount": "{count, plural, =0 {0 ideas} =1 {1 idea} other {# ideas}}"
+    "saving": "Saving...",
+    "titlePlaceholder": "E.g. Reading tracker app...",
+    "descPlaceholder": "Describe your idea...",
+    "tagsPlaceholder": "mobile, saas, AI..."
   },
   "home": {
     "hero": "Never lose a great idea again",
