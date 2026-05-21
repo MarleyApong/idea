@@ -3,6 +3,7 @@
 import { auth } from "@/shared/lib/auth"
 import { prisma } from "@/shared/lib/prisma"
 import { revalidatePath } from "next/cache"
+import { IdeaType } from "@prisma/client"
 
 export type IdeaFormState = {
   success?: boolean
@@ -25,12 +26,17 @@ export async function createIdea(
   const tags = tagsRaw
     ? tagsRaw.split(",").map((t) => t.trim()).filter(Boolean)
     : []
+  const typeRaw = (formData.get("type") as string) || "PROJET"
+  const type = Object.values(IdeaType).includes(typeRaw as IdeaType)
+    ? (typeRaw as IdeaType)
+    : IdeaType.PROJET
 
   await prisma.idea.create({
     data: {
       title,
       description,
       tags,
+      type,
       userId: session.user.id,
     },
   })

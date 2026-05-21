@@ -8,7 +8,8 @@
       "Bash(node -e \"require\\('lucide-react'\\); console.log\\('ok'\\)\")",
       "Bash(node -e \"const l = require\\('lucide-react'\\); console.log\\('Github' in l, 'Chrome' in l\\)\")",
       "Bash(node -e \"const l = require\\('lucide-react'\\); console.log\\('Github:', 'Github' in l, 'Chrome:', 'Chrome' in l\\)\")",
-      "Bash(node -e ' *)"
+      "Bash(node -e ' *)",
+      "Bash(npx prisma *)"
     ]
   }
 }

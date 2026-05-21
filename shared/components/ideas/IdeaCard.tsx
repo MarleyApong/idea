@@ -1,57 +1,80 @@
 "use client"
 
-import type { Idea, IdeaStatus } from "@prisma/client"
+import type { Idea, IdeaStatus, IdeaType } from "@prisma/client"
 import { useTranslations } from "next-intl"
-import { Card, CardBody } from "@/shared/components/ui/Card"
-import { Badge } from "@/shared/components/ui/Badge"
+import { ideaTypeConfig } from "@/shared/lib/idea-types"
 
-const statusVariant: Record<IdeaStatus, "default" | "primary" | "success" | "warning" | "muted"> = {
-  DRAFT: "default",
-  IN_PROGRESS: "primary",
-  DONE: "success",
-  ARCHIVED: "warning",
+const statusStyles: Record<IdeaStatus, string> = {
+  DRAFT:       "bg-slate-100 text-slate-500",
+  IN_PROGRESS: "bg-blue-50 text-blue-600",
+  DONE:        "bg-green-50 text-green-600",
+  ARCHIVED:    "bg-amber-50 text-amber-600",
 }
 
 export function IdeaCard({ idea }: { idea: Idea }) {
   const t = useTranslations("ideas")
 
-  const statusLabel: Record<IdeaStatus, string> = {
-    DRAFT: t("draft"),
-    IN_PROGRESS: t("inProgress"),
-    DONE: t("done"),
-    ARCHIVED: t("archived"),
+  const typeLabels: Record<IdeaType, string> = {
+    PROJET:      t("typeProjet"),
+    INSPIRATION: t("typeInspiration"),
+    RAPPEL:      t("typeRappel"),
+    AUTRE:       t("typeAutre"),
   }
 
+  const statusLabels: Record<IdeaStatus, string> = {
+    DRAFT:       t("draft"),
+    IN_PROGRESS: t("inProgress"),
+    DONE:        t("done"),
+    ARCHIVED:    t("archived"),
+  }
+
+  const cfg = ideaTypeConfig[idea.type] ?? ideaTypeConfig.PROJET
+
   return (
-    <Card hoverable>
-      <CardBody>
-        <div className="flex items-start justify-between gap-3 mb-2">
-          <h3 className="font-semibold text-slate-900 text-base leading-snug line-clamp-2 group-hover:text-primary">
-            {idea.title}
-          </h3>
-          <Badge variant={statusVariant[idea.status]}>
-            {statusLabel[idea.status]}
-          </Badge>
+    <div className="group bg-white rounded-xl border border-slate-200 hover:shadow-md transition-all duration-200 overflow-hidden cursor-pointer">
+      {/* Bande coloree en haut selon le type */}
+      <div className={`h-1 w-full ${cfg.dot}`} />
+
+      <div className="p-5">
+        {/* Type + Status */}
+        <div className="flex items-center justify-between mb-3">
+          <div className={`flex items-center gap-1.5 text-xs font-medium px-2 py-1 rounded-full ${cfg.bg} ${cfg.color}`}>
+            <span className={`w-2 h-2 rounded-full ${cfg.dot}`} />
+            {typeLabels[idea.type]}
+          </div>
+          <span className={`text-xs font-medium px-2 py-1 rounded-full ${statusStyles[idea.status]}`}>
+            {statusLabels[idea.status]}
+          </span>
         </div>
 
+        {/* Titre */}
+        <h3 className="font-semibold text-slate-900 text-base leading-snug line-clamp-2 mb-2 group-hover:text-primary transition-colors">
+          {idea.title}
+        </h3>
+
+        {/* Description */}
         {idea.description && (
-          <p className="text-slate-500 text-sm leading-relaxed line-clamp-3 mb-3">
+          <p className="text-slate-400 text-sm leading-relaxed line-clamp-2 mb-3">
             {idea.description}
           </p>
         )}
 
+        {/* Tags */}
         {idea.tags.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mb-3">
             {idea.tags.map((tag) => (
-              <Badge key={tag} variant="primary">{tag}</Badge>
+              <span key={tag} className="text-xs px-2 py-0.5 bg-slate-100 text-slate-500 rounded-full">
+                {tag}
+              </span>
             ))}
           </div>
         )}
 
-        <p className="text-xs text-slate-400">
+        {/* Date */}
+        <p className="text-xs text-slate-300">
           {new Date(idea.updatedAt).toLocaleDateString()}
         </p>
-      </CardBody>
-    </Card>
+      </div>
+    </div>
   )
 }

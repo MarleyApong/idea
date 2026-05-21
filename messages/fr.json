@@ -44,7 +44,12 @@
     "saving": "Enregistrement...",
     "titlePlaceholder": "Ex: App de suivi de lectures...",
     "descPlaceholder": "Decrivez votre idee...",
-    "tagsPlaceholder": "mobile, saas, IA..."
+    "tagsPlaceholder": "mobile, saas, IA...",
+    "type": "Type",
+    "typeProjet": "Projet",
+    "typeInspiration": "Inspiration",
+    "typeRappel": "Rappel",
+    "typeAutre": "Autre"
   },
   "home": {
     "hero": "Ne perdez plus jamais une bonne idee",

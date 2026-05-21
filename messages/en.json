@@ -44,7 +44,12 @@
     "saving": "Saving...",
     "titlePlaceholder": "E.g. Reading tracker app...",
     "descPlaceholder": "Describe your idea...",
-    "tagsPlaceholder": "mobile, saas, AI..."
+    "tagsPlaceholder": "mobile, saas, AI...",
+    "type": "Type",
+    "typeProjet": "Project",
+    "typeInspiration": "Inspiration",
+    "typeRappel": "Reminder",
+    "typeAutre": "Other"
   },
   "home": {
     "hero": "Never lose a great idea again",

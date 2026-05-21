@@ -61,11 +61,19 @@ model Idea {
   title       String
   description String?
   tags        String[]
+  type        IdeaType   @default(PROJET)
   status      IdeaStatus @default(DRAFT)
   userId      String
   user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
+}
+
+enum IdeaType {
+  PROJET
+  INSPIRATION
+  RAPPEL
+  AUTRE
 }
 
 enum IdeaStatus {
