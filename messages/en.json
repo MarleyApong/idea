@@ -49,7 +49,9 @@
     "typeProjet": "Project",
     "typeInspiration": "Inspiration",
     "typeRappel": "Reminder",
-    "typeAutre": "Other"
+    "typeAutre": "Other",
+    "readMore": "Read more",
+    "seeMinus": "See less"
   },
   "home": {
     "hero": "Never lose a great idea again",

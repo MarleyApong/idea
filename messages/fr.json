@@ -49,7 +49,9 @@
     "typeProjet": "Projet",
     "typeInspiration": "Inspiration",
     "typeRappel": "Rappel",
-    "typeAutre": "Autre"
+    "typeAutre": "Autre",
+    "readMore": "Lire plus",
+    "seeMinus": "Voir moins"
   },
   "home": {
     "hero": "Ne perdez plus jamais une bonne idee",

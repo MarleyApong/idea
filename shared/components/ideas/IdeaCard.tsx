@@ -1,18 +1,22 @@
 "use client"
 
+import { useState } from "react"
 import type { Idea, IdeaStatus, IdeaType } from "@prisma/client"
 import { useTranslations } from "next-intl"
 import { ideaTypeConfig } from "@/shared/lib/idea-types"
 
 const statusStyles: Record<IdeaStatus, string> = {
   DRAFT:       "bg-slate-100 text-slate-500",
-  IN_PROGRESS: "bg-blue-50 text-blue-600",
-  DONE:        "bg-green-50 text-green-600",
-  ARCHIVED:    "bg-amber-50 text-amber-600",
+  IN_PROGRESS: "bg-blue-100 text-blue-700",
+  DONE:        "bg-green-100 text-green-700",
+  ARCHIVED:    "bg-amber-100 text-amber-700",
 }
+
+const DESCRIPTION_LIMIT = 100
 
 export function IdeaCard({ idea }: { idea: Idea }) {
   const t = useTranslations("ideas")
+  const [expanded, setExpanded] = useState(false)
 
   const typeLabels: Record<IdeaType, string> = {
     PROJET:      t("typeProjet"),
@@ -29,51 +33,63 @@ export function IdeaCard({ idea }: { idea: Idea }) {
   }
 
   const cfg = ideaTypeConfig[idea.type] ?? ideaTypeConfig.PROJET
+  const Icon = cfg.icon
+  const isLong = !!idea.description && idea.description.length > DESCRIPTION_LIMIT
 
   return (
-    <div className="group bg-white rounded-xl border border-slate-200 hover:shadow-md transition-all duration-200 overflow-hidden cursor-pointer">
-      {/* Bande coloree en haut selon le type */}
-      <div className={`h-1 w-full ${cfg.dot}`} />
+    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-200 overflow-hidden flex">
+      {/* Panneau gauche colore */}
+      <div className={`w-24 shrink-0 ${cfg.bg} flex flex-col items-center justify-center gap-2 p-3`}>
+        <Icon className="w-8 h-8 text-white" strokeWidth={1.5} />
+        <span className="text-white text-xs font-semibold text-center leading-tight">
+          {typeLabels[idea.type ?? "PROJET"]}
+        </span>
+      </div>
 
-      <div className="p-5">
-        {/* Type + Status */}
-        <div className="flex items-center justify-between mb-3">
-          <div className={`flex items-center gap-1.5 text-xs font-medium px-2 py-1 rounded-full ${cfg.bg} ${cfg.color}`}>
-            <span className={`w-2 h-2 rounded-full ${cfg.dot}`} />
-            {typeLabels[idea.type]}
-          </div>
-          <span className={`text-xs font-medium px-2 py-1 rounded-full ${statusStyles[idea.status]}`}>
+      {/* Contenu droit */}
+      <div className="flex-1 p-4 flex flex-col gap-2 min-w-0">
+        {/* Date + Status */}
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-xs text-slate-400">
+            {new Date(idea.createdAt).toLocaleDateString()}
+          </p>
+          <span className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0 ${statusStyles[idea.status]}`}>
             {statusLabels[idea.status]}
           </span>
         </div>
 
         {/* Titre */}
-        <h3 className="font-semibold text-slate-900 text-base leading-snug line-clamp-2 mb-2 group-hover:text-primary transition-colors">
+        <h3 className="font-bold text-slate-900 text-base leading-snug line-clamp-1">
           {idea.title}
         </h3>
 
         {/* Description */}
         {idea.description && (
-          <p className="text-slate-400 text-sm leading-relaxed line-clamp-2 mb-3">
-            {idea.description}
-          </p>
+          <div>
+            <p className={`text-slate-500 text-sm leading-relaxed ${expanded ? "" : "line-clamp-2"}`}>
+              {idea.description}
+            </p>
+            {isLong && (
+              <button
+                onClick={() => setExpanded(!expanded)}
+                className={`mt-1.5 text-xs font-semibold px-3 py-1 rounded-full ${cfg.bg} text-white hover:opacity-90 transition-opacity`}
+              >
+                {expanded ? t("seeMinus") : t("readMore")}
+              </button>
+            )}
+          </div>
         )}
 
         {/* Tags */}
         {idea.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 mb-3">
+          <div className="flex flex-wrap gap-1 mt-auto pt-1">
             {idea.tags.map((tag) => (
-              <span key={tag} className="text-xs px-2 py-0.5 bg-slate-100 text-slate-500 rounded-full">
+              <span key={tag} className={`text-xs px-2 py-0.5 rounded-full font-medium ${cfg.color} bg-slate-100`}>
                 {tag}
               </span>
             ))}
           </div>
         )}
-
-        {/* Date */}
-        <p className="text-xs text-slate-300">
-          {new Date(idea.updatedAt).toLocaleDateString()}
-        </p>
       </div>
     </div>
   )
