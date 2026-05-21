@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useRef } from "react"
 import { Search, X } from "lucide-react"
 import { useTranslations } from "next-intl"
 import type { IdeaStatus, IdeaType } from "@prisma/client"
@@ -37,6 +38,18 @@ export function IdeasFilters({
   statusFilter, onStatusFilter,
 }: IdeasFiltersProps) {
   const t = useTranslations("ideas")
+  const searchRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+        e.preventDefault()
+        searchRef.current?.focus()
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [])
 
   const typeLabels: Record<IdeaType, string> = {
     PROJET:      t("typeProjet"),
@@ -58,12 +71,18 @@ export function IdeasFilters({
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
         <input
+          ref={searchRef}
           type="text"
           value={search}
           onChange={(e) => onSearch(e.target.value)}
           placeholder={t("searchPlaceholder")}
-          className="w-full pl-9 pr-9 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors bg-white"
+          className="w-full pl-9 pr-16 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors bg-white"
         />
+        {!search && (
+          <kbd className="absolute right-3 top-1/2 -translate-y-1/2 hidden sm:flex items-center gap-0.5 text-xs text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded font-mono">
+            Ctrl K
+          </kbd>
+        )}
         {search && (
           <button onClick={() => onSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
             <X className="w-4 h-4" />

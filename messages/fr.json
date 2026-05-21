@@ -58,7 +58,10 @@
     "noResults": "Aucune idee ne correspond a votre recherche.",
     "clearFilters": "Reinitialiser les filtres",
     "backToIdeas": "Retour aux idees",
-    "noDescription": "Aucune description."
+    "noDescription": "Aucune description.",
+    "status": "Statut",
+    "confirmDeleteTitle": "Supprimer cette idee ?",
+    "confirmDeleteDesc": "Cette action est irreversible."
   },
   "home": {
     "hero": "Ne perdez plus jamais une bonne idee",

@@ -58,7 +58,10 @@
     "noResults": "No ideas match your search.",
     "clearFilters": "Clear filters",
     "backToIdeas": "Back to ideas",
-    "noDescription": "No description."
+    "noDescription": "No description.",
+    "status": "Status",
+    "confirmDeleteTitle": "Delete this idea?",
+    "confirmDeleteDesc": "This action cannot be undone."
   },
   "home": {
     "hero": "Never lose a great idea again",
