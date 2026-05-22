@@ -64,6 +64,14 @@
     "confirmDeleteTitle": "Delete this idea?",
     "confirmDeleteDesc": "This action cannot be undone."
   },
+  "attachments": {
+    "title": "Attachments",
+    "add": "Add",
+    "upload": "Upload",
+    "uploading": "Uploading...",
+    "cancel": "Cancel",
+    "empty": "No attachments."
+  },
   "tags": {
     "title": "My tags",
     "empty": "No tags yet. Add tags to your ideas.",

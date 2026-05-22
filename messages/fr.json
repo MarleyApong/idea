@@ -64,6 +64,14 @@
     "confirmDeleteTitle": "Supprimer cette idee ?",
     "confirmDeleteDesc": "Cette action est irreversible."
   },
+  "attachments": {
+    "title": "Pieces jointes",
+    "add": "Ajouter",
+    "upload": "Televerser",
+    "uploading": "En cours...",
+    "cancel": "Annuler",
+    "empty": "Aucune piece jointe."
+  },
   "tags": {
     "title": "Mes tags",
     "empty": "Aucun tag pour le moment. Ajoutez des tags a vos idees.",

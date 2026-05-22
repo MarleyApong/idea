@@ -3,13 +3,14 @@
 import { useState } from "react"
 import { useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
-import type { Idea, IdeaType, IdeaStatus } from "@prisma/client"
+import type { Idea, IdeaType, IdeaStatus, Attachment } from "@prisma/client"
 import { ArrowLeft, Pencil, Trash2, AlertTriangle, Check, Archive } from "lucide-react"
 import { ideaTypeConfig } from "@/shared/lib/idea-types"
 import { formatDate } from "@/shared/lib/format"
 import { useDeleteIdea } from "@/shared/lib/queries/ideas"
 import { Button } from "@/shared/components/ui/Button"
 import { EditIdeaModal } from "./EditIdeaModal"
+import { IdeaAttachments } from "./IdeaAttachments"
 
 const steps: { status: IdeaStatus; percent: number }[] = [
   { status: "DRAFT",       percent: 0   },
@@ -77,7 +78,7 @@ function IdeaProgressBar({ status, statusLabels }: { status: IdeaStatus; statusL
   )
 }
 
-export function IdeaDetailClient({ idea, locale }: { idea: Idea; locale: string }) {
+export function IdeaDetailClient({ idea, attachments, locale }: { idea: Idea; attachments: Attachment[]; locale: string }) {
   const t = useTranslations("ideas")
   const router = useRouter()
   const [editOpen, setEditOpen] = useState(false)
@@ -169,6 +170,10 @@ export function IdeaDetailClient({ idea, locale }: { idea: Idea; locale: string 
               </div>
             </div>
           )}
+
+          <div className="border-t border-slate-100 pt-5">
+            <IdeaAttachments ideaId={idea.id} initialAttachments={attachments} />
+          </div>
         </div>
       </div>
 
