@@ -7,7 +7,7 @@
 La documentation complete de l'API est disponible en ligne :
 
 ```
-GET https://ton-domaine.com/api/docs
+GET https://idea.mlya.me/api/docs
 ```
 
 En local :

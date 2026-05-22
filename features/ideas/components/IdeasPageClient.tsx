@@ -42,7 +42,7 @@ export function IdeasPageClient({ locale, initialData }: IdeasPageClientProps) {
   return (
     <>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold text-slate-900">
+        <h1 className="text-2xl font-semibold text-[var(--fg)]">
           {ideas.length === 0
             ? t("title")
             : ideas.length === 1
@@ -71,8 +71,8 @@ export function IdeasPageClient({ locale, initialData }: IdeasPageClientProps) {
           <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-5">
             <ClipboardPenLine className="w-8 h-8 text-primary" strokeWidth={1.5} />
           </div>
-          <h3 className="text-lg font-semibold text-slate-900 mb-2">{t("empty")}</h3>
-          <p className="text-slate-400 text-sm mb-6 max-w-xs">{t("emptyDesc")}</p>
+          <h3 className="text-lg font-semibold text-[var(--fg)] mb-2">{t("empty")}</h3>
+          <p className="text-[var(--fg-muted)] text-sm mb-6 max-w-xs">{t("emptyDesc")}</p>
           <Button onClick={() => setModalOpen(true)}>
             <ClipboardPenLine className="w-4 h-4" />
             {t("addFirst")}
@@ -80,7 +80,7 @@ export function IdeasPageClient({ locale, initialData }: IdeasPageClientProps) {
         </div>
       ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
-          <p className="text-slate-400 text-sm">{t("noResults")}</p>
+          <p className="text-[var(--fg-muted)] text-sm">{t("noResults")}</p>
           <button onClick={() => { setSearch(""); setTypeFilter("ALL"); setStatusFilter("ALL") }} className="mt-2 text-sm text-primary font-medium">
             {t("clearFilters")}
           </button>

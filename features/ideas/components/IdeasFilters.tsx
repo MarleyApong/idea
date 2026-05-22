@@ -19,14 +19,14 @@ const types: IdeaType[] = ["PROJET", "INSPIRATION", "RAPPEL", "AUTRE"]
 const statuses: IdeaStatus[] = ["DRAFT", "IN_PROGRESS", "DONE", "ARCHIVED"]
 
 const statusColors: Record<IdeaStatus, string> = {
-  DRAFT:       "bg-slate-100 text-slate-600 border-slate-200",
-  IN_PROGRESS: "bg-blue-100 text-blue-700 border-blue-200",
-  DONE:        "bg-green-100 text-green-700 border-green-200",
-  ARCHIVED:    "bg-amber-100 text-amber-700 border-amber-200",
+  DRAFT:       "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700",
+  IN_PROGRESS: "bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800",
+  DONE:        "bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800",
+  ARCHIVED:    "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800",
 }
 
 const statusActiveColors: Record<IdeaStatus, string> = {
-  DRAFT:       "bg-slate-500 text-white border-slate-500",
+  DRAFT:       "bg-slate-600 text-white border-slate-600",
   IN_PROGRESS: "bg-blue-600 text-white border-blue-600",
   DONE:        "bg-green-600 text-white border-green-600",
   ARCHIVED:    "bg-amber-500 text-white border-amber-500",
@@ -69,22 +69,22 @@ export function IdeasFilters({
     <div className="space-y-3 mb-6">
       {/* Recherche */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--fg-muted)]" />
         <input
           ref={searchRef}
           type="text"
           value={search}
           onChange={(e) => onSearch(e.target.value)}
           placeholder={t("searchPlaceholder")}
-          className="w-full pl-9 pr-16 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors bg-white"
+          className="w-full pl-9 pr-16 py-2.5 rounded-xl border border-[var(--border)] text-sm text-[var(--fg)] placeholder:text-[var(--fg-muted)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors bg-[var(--bg-card)]"
         />
         {!search && (
-          <kbd className="absolute right-3 top-1/2 -translate-y-1/2 hidden sm:flex items-center gap-0.5 text-xs text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded font-mono">
+          <kbd className="absolute right-3 top-1/2 -translate-y-1/2 hidden sm:flex items-center gap-0.5 text-xs text-[var(--fg-muted)] bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded font-mono">
             Ctrl K
           </kbd>
         )}
         {search && (
-          <button onClick={() => onSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+          <button onClick={() => onSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--fg-muted)] hover:text-[var(--fg-muted)]">
             <X className="w-4 h-4" />
           </button>
         )}
@@ -97,7 +97,7 @@ export function IdeasFilters({
           className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${
             typeFilter === "ALL"
               ? "bg-slate-800 text-white border-slate-800"
-              : "bg-white text-slate-600 border-slate-200 hover:border-slate-400"
+              : "bg-[var(--bg-card)] text-[var(--fg-muted)] border-[var(--border)] hover:border-slate-400"
           }`}
         >
           {t("allTypes")}
@@ -112,10 +112,10 @@ export function IdeasFilters({
               className={`flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${
                 active
                   ? `${cfg.bg} text-white border-transparent`
-                  : `bg-white ${cfg.color} border-slate-200 hover:border-current`
+                  : `bg-[var(--bg-card)] ${cfg.color} border-[var(--border)] hover:border-current`
               }`}
             >
-              <span className={`w-2 h-2 rounded-full ${active ? "bg-white" : cfg.dot}`} />
+              <span className={`w-2 h-2 rounded-full ${active ? "bg-[var(--bg-card)]" : cfg.dot}`} />
               {typeLabels[type]}
             </button>
           )
@@ -129,7 +129,7 @@ export function IdeasFilters({
           className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${
             statusFilter === "ALL"
               ? "bg-slate-800 text-white border-slate-800"
-              : "bg-white text-slate-600 border-slate-200 hover:border-slate-400"
+              : "bg-[var(--bg-card)] text-[var(--fg-muted)] border-[var(--border)] hover:border-slate-400"
           }`}
         >
           {t("allStatuses")}
@@ -141,7 +141,7 @@ export function IdeasFilters({
               key={status}
               onClick={() => onStatusFilter(active ? "ALL" : status)}
               className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${
-                active ? statusActiveColors[status] : `bg-white ${statusColors[status]} hover:opacity-80`
+                active ? statusActiveColors[status] : `bg-[var(--bg-card)] ${statusColors[status]} hover:opacity-80`
               }`}
             >
               {statusLabels[status]}

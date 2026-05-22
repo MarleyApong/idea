@@ -52,7 +52,7 @@ export default async function SignInPage({ params }: { params: Promise<{ locale:
       </div>
 
       {/* Right sign-in panel */}
-      <div className="flex-1 flex items-center justify-center p-8 bg-white">
+      <div className="flex-1 flex items-center justify-center p-8 bg-[var(--bg-card)]">
         <div className="w-full max-w-[360px]">
           {/* Mobile logo */}
           <div className="lg:hidden mb-10 flex items-center gap-1.5">
@@ -61,7 +61,7 @@ export default async function SignInPage({ params }: { params: Promise<{ locale:
           </div>
 
           <div className="mb-8">
-            <h1 className="text-[26px] font-semibold text-slate-900">{t("welcomeBack")}</h1>
+            <h1 className="text-[26px] font-semibold text-[var(--fg)]">{t("welcomeBack")}</h1>
             <p className="text-slate-400 text-sm mt-1.5">{t("tagline")}</p>
           </div>
 
@@ -70,7 +70,7 @@ export default async function SignInPage({ params }: { params: Promise<{ locale:
             <form action={googleAction}>
               <button
                 type="submit"
-                className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-slate-200 rounded-xl text-slate-700 text-sm font-medium hover:bg-slate-50 transition-colors"
+                className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-[var(--border)] rounded-xl text-[var(--fg)] text-sm font-medium hover:bg-[var(--bg)] transition-colors"
               >
                 <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
                   <path

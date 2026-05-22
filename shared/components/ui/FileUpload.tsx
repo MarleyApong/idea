@@ -34,7 +34,7 @@ function formatSize(bytes: number) {
 function FileTypeIcon({ file }: { file: File }) {
   if (file.type.startsWith("image/")) return <FileImage className="w-8 h-8 text-blue-500" />
   if (file.type === "application/pdf") return <FileType className="w-8 h-8 text-red-400" />
-  return <FileText className="w-8 h-8 text-slate-400" />
+  return <FileText className="w-8 h-8 text-[var(--fg-muted)]" />
 }
 
 export function FileUpload({
@@ -105,17 +105,17 @@ export function FileUpload({
     <div className={`space-y-2 ${className}`}>
       {selectedFile ? (
         /* Fichier selectionne */
-        <div className="flex items-center gap-3 p-4 bg-white rounded-xl border-2 border-primary/30 shadow-sm">
+        <div className="flex items-center gap-3 p-4 bg-[var(--bg-card)] rounded-xl border-2 border-primary/30 shadow-sm">
           {preview ? (
-            <Image src={preview} alt="" width={56} height={56} unoptimized className="rounded-lg object-cover shrink-0 border border-slate-200" />
+            <Image src={preview} alt="" width={56} height={56} unoptimized className="rounded-lg object-cover shrink-0 border border-[var(--border)]" />
           ) : (
             <div className="w-14 h-14 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
               <FileTypeIcon file={selectedFile} />
             </div>
           )}
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-slate-800 truncate">{selectedFile.name}</p>
-            <p className="text-xs text-slate-400 mt-0.5">{formatSize(selectedFile.size)}</p>
+            <p className="text-sm font-semibold text-[var(--fg)] truncate">{selectedFile.name}</p>
+            <p className="text-xs text-[var(--fg-muted)] mt-0.5">{formatSize(selectedFile.size)}</p>
             {isCompressing && (
               <div className="flex items-center gap-1.5 mt-1">
                 <div className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin" />
@@ -126,7 +126,7 @@ export function FileUpload({
           <button
             type="button"
             onClick={handleRemove}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors shrink-0"
+            className="p-1.5 rounded-lg text-[var(--fg-muted)] hover:text-red-500 hover:bg-red-50 transition-colors shrink-0"
           >
             <X className="w-4 h-4" />
           </button>
@@ -139,7 +139,7 @@ export function FileUpload({
               ? "border-primary bg-primary/5 scale-[1.01]"
               : error
               ? "border-red-300 bg-red-50"
-              : "border-slate-200 hover:border-primary/50 bg-white hover:bg-primary/5"
+              : "border-[var(--border)] hover:border-primary/50 bg-[var(--bg-card)] hover:bg-primary/5"
           }`}
           onDragOver={(e) => { e.preventDefault(); setIsDragging(true) }}
           onDragLeave={() => setIsDragging(false)}
@@ -158,14 +158,14 @@ export function FileUpload({
             <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-colors ${
               isDragging ? "bg-primary/20" : "bg-slate-100"
             }`}>
-              <UploadCloud className={`w-7 h-7 transition-colors ${isDragging ? "text-primary" : "text-slate-400"}`} />
+              <UploadCloud className={`w-7 h-7 transition-colors ${isDragging ? "text-primary" : "text-[var(--fg-muted)]"}`} />
             </div>
             <div className="text-center">
               <p className="text-sm font-medium text-slate-700">
                 Glissez un fichier ici ou{" "}
                 <span className="text-primary underline underline-offset-2">choisissez</span>
               </p>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-[var(--fg-muted)] mt-1">
                 {acceptedExtensions.join(" · ")} &mdash; max {maxSizeInMB}MB
               </p>
             </div>

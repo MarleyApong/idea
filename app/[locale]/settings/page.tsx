@@ -16,10 +16,10 @@ export default async function SettingsPage({ params }: { params: Promise<{ local
   })
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen" style={{ backgroundColor: "var(--bg)" }}>
       <Navbar locale={locale} />
       <main className="max-w-2xl mx-auto px-4 py-8">
-        <h1 className="text-2xl font-semibold text-slate-900 mb-8">Parametres</h1>
+        <h1 className="text-2xl font-semibold text-[var(--fg)] mb-8">Parametres</h1>
         <ApiKeysClient initialKeys={keys} locale={locale} />
       </main>
     </div>

@@ -22,7 +22,7 @@ export default async function IdeaDetailPage({
   if (!idea) notFound()
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[var(--bg)]">
       <Navbar locale={locale} />
       <main className="max-w-3xl mx-auto px-4 py-8">
         <IdeaDetailClient idea={idea} attachments={idea.attachments} locale={locale} />

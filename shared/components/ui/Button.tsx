@@ -11,10 +11,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       "inline-flex items-center justify-center font-medium rounded-xl transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
 
     const variants = {
-      primary: "bg-primary text-white hover:bg-primary-dark",
-      secondary: "border border-slate-200 text-slate-700 hover:bg-slate-50",
-      ghost: "text-slate-500 hover:text-slate-900 hover:bg-slate-100",
-      danger: "bg-red-500 text-white hover:bg-red-600",
+      primary:   "bg-primary text-white hover:bg-primary-dark",
+      secondary: "border border-[var(--border)] text-[var(--fg)] bg-[var(--bg-card)] hover:bg-slate-100 dark:hover:bg-slate-700",
+      ghost:     "text-[var(--fg-muted)] hover:text-[var(--fg)] hover:bg-slate-100 dark:hover:bg-slate-800",
+      danger:    "bg-red-500 text-white hover:bg-red-600",
     }
 
     const sizes = {

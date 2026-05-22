@@ -93,7 +93,7 @@ export function TagInput({ name, defaultValue = "", placeholder, label, color = 
 
       <div ref={containerRef} className="relative">
         <div
-          className="flex flex-wrap gap-1.5 w-full px-3 py-2 rounded-xl border border-slate-200 focus-within:ring-2 focus-within:ring-primary/30 focus-within:border-primary transition-colors bg-white min-h-[44px] cursor-text"
+          className="flex flex-wrap gap-1.5 w-full px-3 py-2 rounded-xl border border-[var(--border)] focus-within:ring-2 focus-within:ring-primary/30 focus-within:border-primary transition-colors bg-[var(--bg-card)] min-h-[44px] cursor-text"
           onClick={() => inputRef.current?.focus()}
         >
           {tags.map((tag) => (
@@ -112,13 +112,13 @@ export function TagInput({ name, defaultValue = "", placeholder, label, color = 
             onKeyDown={handleKeyDown}
             onFocus={() => suggestions.length > 0 && setOpen(true)}
             placeholder={tags.length === 0 ? placeholder : ""}
-            className="flex-1 min-w-[80px] text-sm text-slate-900 placeholder:text-slate-400 outline-none bg-transparent py-0.5"
+            className="flex-1 min-w-[80px] text-sm text-[var(--fg)] placeholder:text-[var(--fg-muted)] outline-none bg-transparent py-0.5"
           />
         </div>
 
         {/* Dropdown suggestions */}
         {open && suggestions.length > 0 && (
-          <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-20 overflow-hidden">
+          <div className="absolute top-full left-0 right-0 mt-1 bg-[var(--bg-card)] border border-[var(--border)] rounded-xl shadow-lg z-20 overflow-hidden">
             {suggestions.map((tag, i) => (
               <button
                 key={tag}
@@ -126,7 +126,7 @@ export function TagInput({ name, defaultValue = "", placeholder, label, color = 
                 onMouseDown={(e) => { e.preventDefault(); addTag(tag) }}
                 onMouseEnter={() => setHighlighted(i)}
                 className={`w-full text-left px-4 py-2 text-sm transition-colors ${
-                  i === highlighted ? `${color} bg-slate-50 font-medium` : "text-slate-700"
+                  i === highlighted ? `${color} bg-[var(--bg)] font-medium` : "text-slate-700"
                 }`}
               >
                 {tag}

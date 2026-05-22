@@ -31,7 +31,7 @@ function AttachmentCard({
   const displayName = att.title || att.filename
 
   return (
-    <div className="group relative bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-md transition-all duration-200">
+    <div className="group relative bg-[var(--bg-card)] rounded-xl border border-[var(--border)] overflow-hidden hover:shadow-md transition-all duration-200">
       {/* Zone apercu */}
       <div
         className="relative h-28 cursor-pointer"
@@ -51,11 +51,11 @@ function AttachmentCard({
             <span className="text-xs font-bold text-red-400 uppercase tracking-wider">PDF</span>
           </div>
         ) : (
-          <div className="w-full h-full bg-slate-50 flex flex-col items-center justify-center gap-1">
+          <div className="w-full h-full bg-[var(--bg)] flex flex-col items-center justify-center gap-1">
             <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
-              <FileText className="w-5 h-5 text-slate-400" />
+              <FileText className="w-5 h-5 text-[var(--fg-muted)]" />
             </div>
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+            <span className="text-xs font-bold text-[var(--fg-muted)] uppercase tracking-wider">
               {att.filename.split(".").pop()?.toUpperCase()}
             </span>
           </div>
@@ -65,7 +65,7 @@ function AttachmentCard({
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
           <button
             onClick={(e) => { e.stopPropagation(); onView() }}
-            className="p-2 bg-white rounded-lg text-slate-700 hover:text-primary shadow-sm transition-colors"
+            className="p-2 bg-[var(--bg-card)] rounded-lg text-[var(--fg)] hover:text-primary shadow-sm transition-colors"
           >
             <Eye className="w-4 h-4" />
           </button>
@@ -73,14 +73,14 @@ function AttachmentCard({
             href={att.url}
             download={att.filename}
             onClick={(e) => e.stopPropagation()}
-            className="p-2 bg-white rounded-lg text-slate-700 hover:text-primary shadow-sm transition-colors"
+            className="p-2 bg-[var(--bg-card)] rounded-lg text-[var(--fg)] hover:text-primary shadow-sm transition-colors"
           >
             <Download className="w-4 h-4" />
           </a>
           <button
             onClick={(e) => { e.stopPropagation(); onDelete() }}
             disabled={deleting}
-            className="p-2 bg-white rounded-lg text-slate-700 hover:text-red-500 shadow-sm transition-colors disabled:opacity-40"
+            className="p-2 bg-[var(--bg-card)] rounded-lg text-[var(--fg)] hover:text-red-500 shadow-sm transition-colors disabled:opacity-40"
           >
             <Trash2 className="w-4 h-4" />
           </button>
@@ -89,8 +89,8 @@ function AttachmentCard({
 
       {/* Infos */}
       <div className="px-3 py-2">
-        <p className="text-xs font-semibold text-slate-800 truncate">{displayName}</p>
-        <p className="text-xs text-slate-400">{formatSize(att.size)}</p>
+        <p className="text-xs font-semibold text-[var(--fg)] truncate">{displayName}</p>
+        <p className="text-xs text-[var(--fg-muted)]">{formatSize(att.size)}</p>
       </div>
     </div>
   )
@@ -130,10 +130,10 @@ export function IdeaAttachments({ ideaId, initialAttachments }: { ideaId: string
       <div>
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <Paperclip className="w-4 h-4 text-slate-400" />
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{t("title")}</p>
+            <Paperclip className="w-4 h-4 text-[var(--fg-muted)]" />
+            <p className="text-xs font-semibold text-[var(--fg-muted)] uppercase tracking-wider">{t("title")}</p>
             {attachments.length > 0 && (
-              <span className="text-xs bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded-full font-medium">
+              <span className="text-xs bg-slate-100 text-[var(--fg-muted)] px-1.5 py-0.5 rounded-full font-medium">
                 {attachments.length}
               </span>
             )}
@@ -145,15 +145,15 @@ export function IdeaAttachments({ ideaId, initialAttachments }: { ideaId: string
         </div>
 
         {showUpload && (
-          <div className="mb-4 p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+          <div className="mb-4 p-4 bg-[var(--bg)] rounded-xl border border-[var(--border)] space-y-3">
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">{t("titleField")}</label>
+              <label className="block text-xs font-medium text-[var(--fg-muted)] mb-1">{t("titleField")}</label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder={t("titlePlaceholder")}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors bg-white"
+                className="w-full px-3 py-2 rounded-xl border border-[var(--border)] text-sm text-[var(--fg)] placeholder:text-[var(--fg-muted)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors bg-[var(--bg-card)]"
               />
             </div>
 
@@ -177,7 +177,7 @@ export function IdeaAttachments({ ideaId, initialAttachments }: { ideaId: string
         )}
 
         {attachments.length === 0 ? (
-          <p className="text-sm text-slate-400 italic">{t("empty")}</p>
+          <p className="text-sm text-[var(--fg-muted)] italic">{t("empty")}</p>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {attachments.map((att) => (

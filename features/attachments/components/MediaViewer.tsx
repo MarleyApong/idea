@@ -99,8 +99,8 @@ function TextViewer({ url }: { url: string }) {
       .catch(() => setError(true))
   }, [url])
 
-  if (error) return <div className="flex-1 flex items-center justify-center text-slate-400">Impossible de charger le fichier</div>
-  if (!content) return <div className="flex-1 flex items-center justify-center text-slate-400">Chargement...</div>
+  if (error) return <div className="flex-1 flex items-center justify-center text-[var(--fg-muted)]">Impossible de charger le fichier</div>
+  if (!content) return <div className="flex-1 flex items-center justify-center text-[var(--fg-muted)]">Chargement...</div>
 
   return (
     <div className="flex-1 overflow-auto bg-slate-950 p-6">
@@ -112,13 +112,13 @@ function TextViewer({ url }: { url: string }) {
 /* ---- Download card ---- */
 function DownloadCard({ attachment }: { attachment: Attachment }) {
   return (
-    <div className="flex-1 flex flex-col items-center justify-center gap-4 bg-slate-50">
+    <div className="flex-1 flex flex-col items-center justify-center gap-4 bg-[var(--bg)]">
       <div className="w-20 h-20 bg-slate-200 rounded-2xl flex items-center justify-center">
-        <FileType className="w-10 h-10 text-slate-400" />
+        <FileType className="w-10 h-10 text-[var(--fg-muted)]" />
       </div>
       <div className="text-center">
-        <p className="font-semibold text-slate-800">{attachment.title || attachment.filename}</p>
-        <p className="text-sm text-slate-400 mt-1">{formatSize(attachment.size)}</p>
+        <p className="font-semibold text-[var(--fg)]">{attachment.title || attachment.filename}</p>
+        <p className="text-sm text-[var(--fg-muted)] mt-1">{formatSize(attachment.size)}</p>
       </div>
       <a
         href={attachment.url}
@@ -158,31 +158,31 @@ export function MediaViewer({ attachment, onClose }: MediaViewerProps) {
       className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className={`flex flex-col bg-white rounded-2xl overflow-hidden shadow-2xl w-full ${
+      <div className={`flex flex-col bg-[var(--bg-card)] rounded-2xl overflow-hidden shadow-2xl w-full ${
         docType === "IMAGE" ? "max-w-5xl h-[90vh]" :
         docType === "PDF"   ? "max-w-4xl h-[90vh]" :
         docType === "TEXT"  ? "max-w-3xl h-[80vh]" :
                               "max-w-sm"
       }`}>
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100 shrink-0">
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-[var(--border)] shrink-0">
           <div className="flex items-center gap-2 min-w-0">
-            <FileText className="w-4 h-4 text-slate-400 shrink-0" />
-            <p className="text-sm font-semibold text-slate-800 truncate">{displayTitle}</p>
-            <span className="text-xs text-slate-400 shrink-0">{formatSize(attachment.size)}</span>
+            <FileText className="w-4 h-4 text-[var(--fg-muted)] shrink-0" />
+            <p className="text-sm font-semibold text-[var(--fg)] truncate">{displayTitle}</p>
+            <span className="text-xs text-[var(--fg-muted)] shrink-0">{formatSize(attachment.size)}</span>
           </div>
           <div className="flex items-center gap-2 shrink-0 ml-4">
             <a
               href={attachment.url}
               download={attachment.filename}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-primary hover:bg-slate-100 transition-colors"
+              className="p-1.5 rounded-lg text-[var(--fg-muted)] hover:text-primary hover:bg-slate-100 transition-colors"
               title="Telecharger"
             >
               <Download className="w-4 h-4" />
             </a>
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+              className="p-1.5 rounded-lg text-[var(--fg-muted)] hover:text-[var(--fg)] hover:bg-slate-100 transition-colors"
             >
               <X className="w-4 h-4" />
             </button>

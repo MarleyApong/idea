@@ -9,7 +9,7 @@ const variants = {
   primary: "bg-primary/10 text-primary",
   success: "bg-green-50 text-green-700",
   warning: "bg-amber-50 text-amber-700",
-  muted: "bg-slate-50 text-slate-400",
+  muted: "bg-[var(--bg)] text-[var(--fg-muted)]",
 }
 
 export function Badge({ children, variant = "default", className = "" }: BadgeProps) {

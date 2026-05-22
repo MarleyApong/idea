@@ -7,6 +7,7 @@ import { routing } from "@/shared/i18n/routing"
 import { SessionProvider } from "next-auth/react"
 import { auth } from "@/shared/lib/auth"
 import { QueryProvider } from "@/shared/providers/QueryProvider"
+import { ThemeProvider } from "@/shared/providers/ThemeProvider"
 import { Toaster } from "@/shared/components/ui/Toaster"
 import "../globals.css"
 
@@ -43,15 +44,17 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
 
   return (
     <html lang={locale} className={`${poppins.variable} h-full`} suppressHydrationWarning>
-      <body className="min-h-full flex flex-col font-sans antialiased bg-slate-50 text-slate-900">
-        <SessionProvider session={session}>
-          <QueryProvider>
-            <NextIntlClientProvider messages={messages}>
-              {children}
-              <Toaster />
-            </NextIntlClientProvider>
-          </QueryProvider>
-        </SessionProvider>
+      <body className="min-h-full flex flex-col font-sans antialiased" style={{ backgroundColor: "var(--bg)", color: "var(--fg)" }}>
+        <ThemeProvider>
+          <SessionProvider session={session}>
+            <QueryProvider>
+              <NextIntlClientProvider messages={messages}>
+                {children}
+                <Toaster />
+              </NextIntlClientProvider>
+            </QueryProvider>
+          </SessionProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

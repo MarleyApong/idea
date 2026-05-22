@@ -22,7 +22,7 @@ export function LocaleSwitcher({ locale }: { locale: string }) {
           className={`px-2 py-1 rounded font-medium uppercase transition-colors ${
             l === locale
               ? "text-primary"
-              : "text-slate-400 hover:text-slate-700"
+              : "text-[var(--fg-muted)] hover:text-slate-700"
           }`}
         >
           {l}

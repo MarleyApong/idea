@@ -37,7 +37,7 @@ export function TagsPageClient({ tags, locale, title, emptyText, ideasLabel }: T
             <Tag className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-2xl font-semibold text-slate-900">{title}</h1>
+            <h1 className="text-2xl font-semibold text-[var(--fg)]">{title}</h1>
             <p className="text-sm text-slate-400">{tags.length} tag{tags.length !== 1 ? "s" : ""}</p>
           </div>
         </div>
@@ -60,7 +60,7 @@ export function TagsPageClient({ tags, locale, title, emptyText, ideasLabel }: T
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Rechercher un tag..."
-              className="w-full pl-9 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors bg-white"
+              className="w-full pl-9 py-2.5 rounded-xl border border-[var(--border)] text-sm text-[var(--fg)] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors bg-[var(--bg-card)]"
             />
           </div>
 
@@ -70,11 +70,11 @@ export function TagsPageClient({ tags, locale, title, emptyText, ideasLabel }: T
               <button
                 key={tag.name}
                 onClick={() => handleTagClick(tag.name)}
-                className="bg-white rounded-xl border border-slate-200 p-4 text-left hover:border-primary hover:shadow-sm transition-all group"
+                className="bg-[var(--bg-card)] rounded-xl border border-[var(--border)] p-4 text-left hover:border-primary hover:shadow-sm transition-all group"
               >
                 <div className="flex items-center gap-2 mb-2">
                   <span className="w-2 h-2 rounded-full bg-primary shrink-0" />
-                  <span className="text-sm font-semibold text-slate-800 group-hover:text-primary transition-colors truncate">
+                  <span className="text-sm font-semibold text-[var(--fg)] group-hover:text-primary transition-colors truncate">
                     {tag.name}
                   </span>
                 </div>
