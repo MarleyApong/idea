@@ -1,0 +1,10 @@
+.next
+node_modules
+.git
+.gitignore
+.env*
+!.env.example
+README.md
+*.log
+public/uploads
+prisma/migrations
