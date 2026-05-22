@@ -36,30 +36,35 @@ export async function Navbar({ locale }: { locale: string }) {
 
           {session ? (
             <div className="flex items-center gap-3">
-              {session.user?.image ? (
-                <img
-                  src={session.user.image}
-                  alt={session.user.name ?? ""}
-                  referrerPolicy="no-referrer"
-                  className="w-8 h-8 rounded-full object-cover"
-                />
-              ) : (
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <span className="text-primary text-sm font-medium">
-                    {session.user?.name?.[0]?.toUpperCase() ?? "U"}
-                  </span>
-                </div>
-              )}
+              <div className="flex items-center gap-2">
+                {session.user?.image ? (
+                  <img
+                    src={session.user.image}
+                    alt={session.user.name ?? ""}
+                    referrerPolicy="no-referrer"
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    <span className="text-primary text-sm font-medium">
+                      {session.user?.name?.[0]?.toUpperCase() ?? "U"}
+                    </span>
+                  </div>
+                )}
+                <span className="hidden sm:block text-sm font-medium text-slate-700">
+                  {session.user?.name?.split(" ")[0]}
+                </span>
+              </div>
               <form action={logoutAction}>
                 <button
                   type="submit"
-                  className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 transition-colors"
+                  title={t("signOut")}
+                  className="flex items-center text-slate-400 hover:text-slate-900 transition-colors p-1.5 rounded-lg hover:bg-slate-100"
                 >
                   <LogOut className="w-4 h-4" />
-                  {t("signOut")}
                 </button>
               </form>
-            </div>
+              </div>
           ) : (
             <Link
               href={`/${locale}/auth/signin`}
