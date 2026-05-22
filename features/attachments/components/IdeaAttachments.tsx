@@ -2,23 +2,98 @@
 
 import { useState } from "react"
 import type { Attachment } from "@prisma/client"
-import { Paperclip, Trash2, FileText, FileImage, FileType, Download, Plus, X, Eye } from "lucide-react"
+import { Paperclip, Trash2, FileText, FileType, Download, Plus, X, Eye } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useAttachments, useUploadAttachment, useDeleteAttachment } from "@/features/attachments/hooks/useAttachments"
 import { FileUpload } from "@/shared/components/ui/FileUpload"
 import { Button } from "@/shared/components/ui/Button"
 import { MediaViewer } from "./MediaViewer"
 
-function AttachmentIcon({ mimeType }: { mimeType: string }) {
-  if (mimeType.startsWith("image/")) return <FileImage className="w-5 h-5 text-blue-500 shrink-0" />
-  if (mimeType === "application/pdf") return <FileType className="w-5 h-5 text-red-400 shrink-0" />
-  return <FileText className="w-5 h-5 text-slate-400 shrink-0" />
-}
-
 function formatSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
+
+function AttachmentCard({
+  att,
+  onView,
+  onDelete,
+  deleting,
+}: {
+  att: Attachment
+  onView: () => void
+  onDelete: () => void
+  deleting: boolean
+}) {
+  const isImage = att.mimeType.startsWith("image/")
+  const isPdf = att.mimeType === "application/pdf"
+  const displayName = att.title || att.filename
+
+  return (
+    <div className="group relative bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-md transition-all duration-200">
+      {/* Zone apercu */}
+      <div
+        className="relative h-28 cursor-pointer"
+        onClick={onView}
+      >
+        {isImage ? (
+          <img
+            src={att.url}
+            alt={displayName}
+            className="w-full h-full object-cover"
+          />
+        ) : isPdf ? (
+          <div className="w-full h-full bg-red-50 flex flex-col items-center justify-center gap-1">
+            <div className="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center">
+              <FileType className="w-5 h-5 text-red-500" />
+            </div>
+            <span className="text-xs font-bold text-red-400 uppercase tracking-wider">PDF</span>
+          </div>
+        ) : (
+          <div className="w-full h-full bg-slate-50 flex flex-col items-center justify-center gap-1">
+            <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
+              <FileText className="w-5 h-5 text-slate-400" />
+            </div>
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+              {att.filename.split(".").pop()?.toUpperCase()}
+            </span>
+          </div>
+        )}
+
+        {/* Overlay actions au survol */}
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
+          <button
+            onClick={(e) => { e.stopPropagation(); onView() }}
+            className="p-2 bg-white rounded-lg text-slate-700 hover:text-primary shadow-sm transition-colors"
+          >
+            <Eye className="w-4 h-4" />
+          </button>
+          <a
+            href={att.url}
+            download={att.filename}
+            onClick={(e) => e.stopPropagation()}
+            className="p-2 bg-white rounded-lg text-slate-700 hover:text-primary shadow-sm transition-colors"
+          >
+            <Download className="w-4 h-4" />
+          </a>
+          <button
+            onClick={(e) => { e.stopPropagation(); onDelete() }}
+            disabled={deleting}
+            className="p-2 bg-white rounded-lg text-slate-700 hover:text-red-500 shadow-sm transition-colors disabled:opacity-40"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
+      {/* Infos */}
+      <div className="px-3 py-2">
+        <p className="text-xs font-semibold text-slate-800 truncate">{displayName}</p>
+        <p className="text-xs text-slate-400">{formatSize(att.size)}</p>
+      </div>
+    </div>
+  )
 }
 
 export function IdeaAttachments({ ideaId, initialAttachments }: { ideaId: string; initialAttachments: Attachment[] }) {
@@ -34,10 +109,7 @@ export function IdeaAttachments({ ideaId, initialAttachments }: { ideaId: string
 
   function handleFileSelect(file: File) {
     setSelectedFile(file)
-    if (!title) {
-      const nameWithoutExt = file.name.replace(/\.[^.]+$/, "")
-      setTitle(nameWithoutExt)
-    }
+    if (!title) setTitle(file.name.replace(/\.[^.]+$/, ""))
   }
 
   function handleUpload() {
@@ -107,28 +179,15 @@ export function IdeaAttachments({ ideaId, initialAttachments }: { ideaId: string
         {attachments.length === 0 ? (
           <p className="text-sm text-slate-400 italic">{t("empty")}</p>
         ) : (
-          <div className="space-y-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {attachments.map((att) => (
-              <div key={att.id} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200 group">
-                <AttachmentIcon mimeType={att.mimeType} />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-slate-800 truncate">
-                    {att.title || att.filename}
-                  </p>
-                  <p className="text-xs text-slate-400">{formatSize(att.size)}</p>
-                </div>
-                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button onClick={() => setViewing(att)} className="p-1.5 rounded-lg text-slate-400 hover:text-primary hover:bg-white transition-colors" title="Apercu">
-                    <Eye className="w-4 h-4" />
-                  </button>
-                  <a href={att.url} download={att.filename} className="p-1.5 rounded-lg text-slate-400 hover:text-primary hover:bg-white transition-colors" title="Telecharger">
-                    <Download className="w-4 h-4" />
-                  </a>
-                  <button onClick={() => remove(att.id)} disabled={removing} className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-white transition-colors disabled:opacity-40" title="Supprimer">
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
+              <AttachmentCard
+                key={att.id}
+                att={att}
+                onView={() => setViewing(att)}
+                onDelete={() => remove(att.id)}
+                deleting={removing}
+              />
             ))}
           </div>
         )}
