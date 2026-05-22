@@ -15,6 +15,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   ideas         Idea[]
+  apiKeys       ApiKey[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
@@ -80,6 +81,17 @@ model Attachment {
   ideaId    String
   idea      Idea     @relation(fields: [ideaId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
+}
+
+model ApiKey {
+  id        String    @id @default(cuid())
+  name      String
+  prefix    String
+  keyHash   String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lastUsedAt DateTime?
+  createdAt DateTime  @default(now())
 }
 
 enum IdeaType {
