@@ -66,13 +66,13 @@ export function ApiKeysClient({ initialKeys, locale }: ApiKeysClientProps) {
   return (
     <div className="space-y-6">
       {/* Section cles API */}
-      <div className="bg-[var(--bg-card)] rounded-2xl border border-[var(--border)] overflow-hidden">
-        <div className="px-6 py-5 border-b border-[var(--border)]">
+      <div className="bg-(--bg-card) rounded-2xl border border-(--border) overflow-hidden">
+        <div className="px-6 py-5 border-b border-(--border)">
           <div className="flex items-center gap-2 mb-1">
             <Key className="w-5 h-5 text-primary" />
-            <h2 className="text-base font-semibold text-[var(--fg)]">Cles API</h2>
+            <h2 className="text-base font-semibold text-(--fg)">Cles API</h2>
           </div>
-          <p className="text-sm text-[var(--fg-muted)]">
+          <p className="text-sm text-(--fg-muted)">
             Utilisees pour creer des idees depuis Claude Code ou tout autre outil externe.
           </p>
         </div>
@@ -87,12 +87,12 @@ export function ApiKeysClient({ initialKeys, locale }: ApiKeysClientProps) {
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <div className="flex-1 flex items-center bg-[var(--bg)] border border-amber-200 dark:border-amber-800 rounded-lg px-3 py-2 font-mono text-sm text-[var(--fg)] min-w-0">
+              <div className="flex-1 flex items-center bg-(--bg) border border-amber-200 dark:border-amber-800 rounded-lg px-3 py-2 font-mono text-sm text-(--fg) min-w-0">
                 <span className="truncate">
                   {showKey ? newKey : newKey.slice(0, 16) + "••••••••••••••••••••••••••••••••••••••••••••••••"}
                 </span>
               </div>
-              <button onClick={() => setShowKey(!showKey)} className="p-2 text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors shrink-0">
+              <button onClick={() => setShowKey(!showKey)} className="p-2 text-(--fg-muted) hover:text-(--fg) transition-colors shrink-0">
                 {showKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
               <button onClick={handleCopy} className="flex items-center gap-1.5 px-3 py-2 bg-amber-500 text-white rounded-lg text-sm font-medium hover:bg-amber-600 transition-colors shrink-0">
@@ -109,16 +109,16 @@ export function ApiKeysClient({ initialKeys, locale }: ApiKeysClientProps) {
         {/* Liste des cles */}
         <div className="px-6 py-4 space-y-3">
           {keys.length === 0 && !newKey ? (
-            <p className="text-sm text-[var(--fg-muted)] text-center py-4">Aucune cle API.</p>
+            <p className="text-sm text-(--fg-muted) text-center py-4">Aucune cle API.</p>
           ) : (
             keys.map((key) => (
-              <div key={key.id} className="flex items-center gap-3 p-3 bg-[var(--bg)] rounded-xl border border-[var(--border)]">
-                <Key className="w-4 h-4 text-[var(--fg-muted)] shrink-0" />
+              <div key={key.id} className="flex items-center gap-3 p-3 bg-(--bg) rounded-xl border border-(--border)">
+                <Key className="w-4 h-4 text-(--fg-muted) shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-[var(--fg)]">{key.name}</p>
-                  <p className="text-xs text-[var(--fg-muted)] font-mono">{key.prefix}••••••••</p>
+                  <p className="text-sm font-semibold text-(--fg)">{key.name}</p>
+                  <p className="text-xs text-(--fg-muted) font-mono">{key.prefix}••••••••</p>
                 </div>
-                <div className="text-right text-xs text-[var(--fg-muted)] shrink-0">
+                <div className="text-right text-xs text-(--fg-muted) shrink-0">
                   {key.lastUsedAt ? (
                     <p>Utilise le {formatDate(key.lastUsedAt, locale)}</p>
                   ) : (
@@ -128,7 +128,7 @@ export function ApiKeysClient({ initialKeys, locale }: ApiKeysClientProps) {
                 </div>
                 <button
                   onClick={() => handleDelete(key.id)}
-                  className="p-1.5 text-[var(--fg-muted)] hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors shrink-0"
+                  className="p-1.5 text-(--fg-muted) hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors shrink-0"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -138,7 +138,7 @@ export function ApiKeysClient({ initialKeys, locale }: ApiKeysClientProps) {
         </div>
 
         {/* Creer une nouvelle cle */}
-        <div className="px-6 pb-5 border-t border-[var(--border)] pt-4">
+        <div className="px-6 pb-5 border-t border-(--border) pt-4">
           <div className="flex gap-2">
             <input
               type="text"
@@ -146,7 +146,7 @@ export function ApiKeysClient({ initialKeys, locale }: ApiKeysClientProps) {
               onChange={(e) => setName(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleCreate()}
               placeholder="Nom de la cle (ex: Claude Code local)"
-              className="flex-1 px-3 py-2.5 rounded-xl border border-[var(--border)] text-sm text-[var(--fg)] placeholder:text-[var(--fg-muted)] bg-[var(--input-bg)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
+              className="flex-1 px-3 py-2.5 rounded-xl border border-(--border) text-sm text-(--fg) placeholder:text-(--fg-muted) bg-(--input-bg) focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
             />
             <Button onClick={handleCreate} disabled={creating || !name.trim()}>
               <Plus className="w-4 h-4" />
@@ -157,12 +157,12 @@ export function ApiKeysClient({ initialKeys, locale }: ApiKeysClientProps) {
       </div>
 
       {/* Exemple d'utilisation */}
-      <div className="bg-[var(--bg-card)] rounded-2xl border border-[var(--border)] overflow-hidden">
-        <div className="px-6 py-5 border-b border-[var(--border)]">
-          <h2 className="text-base font-semibold text-[var(--fg)]">Utilisation avec Claude Code</h2>
+      <div className="bg-(--bg-card) rounded-2xl border border-(--border) overflow-hidden">
+        <div className="px-6 py-5 border-b border-(--border)">
+          <h2 className="text-base font-semibold text-(--fg)">Utilisation avec Claude Code</h2>
         </div>
         <div className="px-6 py-5 space-y-3">
-          <p className="text-sm text-[var(--fg-muted)]">Dans une session Claude Code, dis simplement :</p>
+          <p className="text-sm text-(--fg-muted)">Dans une session Claude Code, dis simplement :</p>
           <div className="bg-slate-950 rounded-xl p-4 font-mono text-sm text-slate-300 leading-relaxed">
             <span className="text-slate-500"># Creer une idee via l'API</span>
             <br />
@@ -171,7 +171,7 @@ export function ApiKeysClient({ initialKeys, locale }: ApiKeysClientProps) {
             {"  "}-H "Content-Type: application/json" \<br />
             {"  "}-d {'\'{"title":"Mon idee","description":"...","type":"PROJET"}\''}
           </div>
-          <p className="text-xs text-[var(--fg-muted)]">
+          <p className="text-xs text-(--fg-muted)">
             Types acceptes : PROJET, INSPIRATION, RAPPEL, AUTRE
           </p>
         </div>

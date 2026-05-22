@@ -48,9 +48,9 @@ export function NewIdeaModal({ locale, onClose }: NewIdeaModalProps) {
       className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-[var(--bg-card)] rounded-2xl w-full max-w-lg shadow-xl">
-        <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-[var(--border)]">
-          <h2 className="text-lg font-semibold text-[var(--fg)]">{t("new")}</h2>
+      <div className="bg-(--bg-card) rounded-2xl w-full max-w-lg shadow-xl">
+        <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-(--border)">
+          <h2 className="text-lg font-semibold text-(--fg)">{t("new")}</h2>
           <Button variant="ghost" size="sm" type="button" onClick={onClose} className="!p-1.5 rounded-lg">
             <X className="w-4 h-4" />
           </Button>
@@ -59,7 +59,7 @@ export function NewIdeaModal({ locale, onClose }: NewIdeaModalProps) {
         <form ref={formRef} onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
           {/* Type selector */}
           <div>
-            <p className="text-sm font-medium text-[var(--fg)] mb-2">{t("type")}</p>
+            <p className="text-sm font-medium text-(--fg) mb-2">{t("type")}</p>
             <div className="grid grid-cols-4 gap-2">
               {types.map((type) => {
                 const cfg = ideaTypeConfig[type]
@@ -70,7 +70,7 @@ export function NewIdeaModal({ locale, onClose }: NewIdeaModalProps) {
                     type="button"
                     onClick={() => setSelectedType(type)}
                     className={`flex flex-col items-center gap-1.5 px-2 py-2.5 rounded-xl border-2 transition-all ${
-                      active ? `${cfg.bg} border-transparent` : "border-[var(--border)] hover:border-slate-300"
+                      active ? `${cfg.bg} border-transparent` : "border-(--border) hover:border-slate-300"
                     } ${cfg.color}`}
                   >
                     <span className={`w-3 h-3 rounded-full ${cfg.dot}`} />

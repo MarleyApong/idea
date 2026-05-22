@@ -26,8 +26,8 @@ export function ThemeSwitcher() {
           title={value}
           className={`p-1.5 rounded-md transition-colors ${
             theme === value
-              ? "bg-[var(--bg-card)] dark:bg-slate-700 text-primary shadow-sm"
-              : "text-[var(--fg-muted)] hover:text-slate-600 dark:hover:text-slate-300"
+              ? "bg-(--bg-card) dark:bg-slate-700 text-primary shadow-sm"
+              : "text-(--fg-muted) hover:text-slate-600 dark:hover:text-slate-300"
           }`}
         >
           <Icon className="w-3.5 h-3.5" />

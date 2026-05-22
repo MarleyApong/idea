@@ -29,8 +29,8 @@ function IdeaProgressBar({ status, statusLabels }: { status: IdeaStatus; statusL
 
   if (isArchived) {
     return (
-      <div className="px-6 py-4 border-t border-[var(--border)]">
-        <div className="flex items-center gap-2 text-[var(--fg-muted)]">
+      <div className="px-6 py-4 border-t border-(--border)">
+        <div className="flex items-center gap-2 text-(--fg-muted)">
           <Archive className="w-4 h-4" />
           <span className="text-sm font-medium">{statusLabels["ARCHIVED"]}</span>
         </div>
@@ -42,7 +42,7 @@ function IdeaProgressBar({ status, statusLabels }: { status: IdeaStatus; statusL
   }
 
   return (
-    <div className="px-6 py-4 border-t border-[var(--border)]">
+    <div className="px-6 py-4 border-t border-(--border)">
       {/* Etapes */}
       <div className="flex items-center justify-between mb-3">
         {steps.map((step, i) => {
@@ -55,11 +55,11 @@ function IdeaProgressBar({ status, statusLabels }: { status: IdeaStatus; statusL
                   ? isCurrent
                     ? "bg-primary text-white ring-4 ring-primary/20"
                     : "bg-primary text-white"
-                  : "bg-slate-100 text-[var(--fg-muted)]"
+                  : "bg-slate-100 text-(--fg-muted)"
               }`}>
                 {isDone && !isCurrent ? <Check className="w-3.5 h-3.5" /> : i + 1}
               </div>
-              <span className={`text-xs font-medium ${isCurrent ? "text-primary" : isDone ? "text-[var(--fg-muted)]" : "text-[var(--fg-muted)]"}`}>
+              <span className={`text-xs font-medium ${isCurrent ? "text-primary" : isDone ? "text-(--fg-muted)" : "text-(--fg-muted)"}`}>
                 {statusLabels[step.status]}
               </span>
             </div>
@@ -123,17 +123,17 @@ export function IdeaDetailClient({ idea, attachments, locale }: { idea: Idea; at
       </div>
 
       {/* Card detail */}
-      <div className="bg-[var(--bg-card)] rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden">
+      <div className="bg-(--bg-card) rounded-2xl border border-(--border) shadow-sm overflow-hidden">
         {/* Header colore */}
         <div className={`${cfg.bg} px-6 py-5 flex items-center gap-4`}>
-          <div className="w-12 h-12 bg-[var(--bg-card)]/20 rounded-xl flex items-center justify-center shrink-0">
+          <div className="w-12 h-12 bg-(--bg-card)/20 rounded-xl flex items-center justify-center shrink-0">
             <Icon className="w-6 h-6 text-white" strokeWidth={2} />
           </div>
           <div className="min-w-0">
             <p className="text-white/70 text-xs font-medium uppercase tracking-wider">
               {typeLabels[idea.type]}
             </p>
-            <h1 className="text-white text-xl font-bold leading-tight mt-0.5 break-words">
+            <h1 className="text-white text-xl font-bold leading-tight mt-0.5 wrap-break-word">
               {idea.title}
             </h1>
           </div>
@@ -143,24 +143,24 @@ export function IdeaDetailClient({ idea, attachments, locale }: { idea: Idea; at
         <IdeaProgressBar status={idea.status} statusLabels={statusLabels} />
 
         {/* Contenu */}
-        <div className="px-6 py-5 space-y-5 border-t border-[var(--border)]">
-          <div className="flex flex-wrap gap-3 text-xs text-[var(--fg-muted)]">
+        <div className="px-6 py-5 space-y-5 border-t border-(--border)">
+          <div className="flex flex-wrap gap-3 text-xs text-(--fg-muted)">
             <span>{t("createdAt")} {formatDate(idea.createdAt, locale)}</span>
             <span>{t("updatedAt")} {formatDate(idea.updatedAt, locale)}</span>
           </div>
 
           {idea.description ? (
             <div>
-              <p className="text-xs font-semibold text-[var(--fg-muted)] uppercase tracking-wider mb-2">{t("description")}</p>
-              <p className="text-[var(--fg)] text-sm leading-relaxed whitespace-pre-wrap">{idea.description}</p>
+              <p className="text-xs font-semibold text-(--fg-muted) uppercase tracking-wider mb-2">{t("description")}</p>
+              <p className="text-(--fg) text-sm leading-relaxed whitespace-pre-wrap">{idea.description}</p>
             </div>
           ) : (
-            <p className="text-[var(--fg-muted)] text-sm italic">{t("noDescription")}</p>
+            <p className="text-(--fg-muted) text-sm italic">{t("noDescription")}</p>
           )}
 
           {idea.tags.length > 0 && (
             <div>
-              <p className="text-xs font-semibold text-[var(--fg-muted)] uppercase tracking-wider mb-2">{t("tags")}</p>
+              <p className="text-xs font-semibold text-(--fg-muted) uppercase tracking-wider mb-2">{t("tags")}</p>
               <div className="flex flex-wrap gap-2">
                 {idea.tags.map((tag) => (
                   <span key={tag} className={`text-xs px-3 py-1 rounded-full font-medium bg-slate-100 ${cfg.color}`}>
@@ -171,7 +171,7 @@ export function IdeaDetailClient({ idea, attachments, locale }: { idea: Idea; at
             </div>
           )}
 
-          <div className="border-t border-[var(--border)] pt-5">
+          <div className="border-t border-(--border) pt-5">
             <IdeaAttachments ideaId={idea.id} initialAttachments={attachments} />
           </div>
         </div>
@@ -181,14 +181,14 @@ export function IdeaDetailClient({ idea, attachments, locale }: { idea: Idea; at
 
       {confirmDelete && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-[var(--bg-card)] rounded-2xl w-full max-w-sm shadow-xl p-6 space-y-4">
+          <div className="bg-(--bg-card) rounded-2xl w-full max-w-sm shadow-xl p-6 space-y-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center shrink-0">
                 <AlertTriangle className="w-5 h-5 text-red-500" />
               </div>
               <div>
-                <h3 className="font-semibold text-[var(--fg)]">{t("confirmDeleteTitle")}</h3>
-                <p className="text-sm text-[var(--fg-muted)] mt-0.5">{t("confirmDeleteDesc")}</p>
+                <h3 className="font-semibold text-(--fg)">{t("confirmDeleteTitle")}</h3>
+                <p className="text-sm text-(--fg-muted) mt-0.5">{t("confirmDeleteDesc")}</p>
               </div>
             </div>
             <div className="flex gap-3 pt-1">

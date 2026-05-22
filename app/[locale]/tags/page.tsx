@@ -30,7 +30,7 @@ export default async function TagsPage({ params }: { params: Promise<{ locale: s
   const t = await getTranslations("tags")
 
   return (
-    <div className="min-h-screen bg-[var(--bg)]">
+    <div className="min-h-screen bg-(--bg)">
       <Navbar locale={locale} />
       <main className="max-w-4xl mx-auto px-4 py-8">
         <TagsPageClient tags={tags} locale={locale} title={t("title")} emptyText={t("empty")} ideasLabel={t("ideas")} />

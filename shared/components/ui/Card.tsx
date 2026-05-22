@@ -9,7 +9,7 @@ export function Card({ children, className = "", onClick, hoverable = false }: C
   return (
     <div
       onClick={onClick}
-      className={`bg-[var(--bg-card)] rounded-xl border border-[var(--border)] ${
+      className={`bg-(--bg-card) rounded-xl border border-(--border) ${
         hoverable ? "hover:shadow-sm cursor-pointer transition-shadow" : ""
       } ${className}`}
     >

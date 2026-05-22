@@ -69,22 +69,22 @@ export function IdeasFilters({
     <div className="space-y-3 mb-6">
       {/* Recherche */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--fg-muted)]" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-(--fg-muted)" />
         <input
           ref={searchRef}
           type="text"
           value={search}
           onChange={(e) => onSearch(e.target.value)}
           placeholder={t("searchPlaceholder")}
-          className="w-full pl-9 pr-16 py-2.5 rounded-xl border border-[var(--border)] text-sm text-[var(--fg)] placeholder:text-[var(--fg-muted)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors bg-[var(--bg-card)]"
+          className="w-full pl-9 pr-16 py-2.5 rounded-xl border border-(--border) text-sm text-(--fg) placeholder:text-(--fg-muted) focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors bg-(--bg-card)"
         />
         {!search && (
-          <kbd className="absolute right-3 top-1/2 -translate-y-1/2 hidden sm:flex items-center gap-0.5 text-xs text-[var(--fg-muted)] bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded font-mono">
+          <kbd className="absolute right-3 top-1/2 -translate-y-1/2 hidden sm:flex items-center gap-0.5 text-xs text-(--fg-muted) bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded font-mono">
             Ctrl K
           </kbd>
         )}
         {search && (
-          <button onClick={() => onSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--fg-muted)] hover:text-[var(--fg-muted)]">
+          <button onClick={() => onSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-(--fg-muted) hover:text-(--fg-muted)">
             <X className="w-4 h-4" />
           </button>
         )}
@@ -97,7 +97,7 @@ export function IdeasFilters({
           className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${
             typeFilter === "ALL"
               ? "bg-slate-800 text-white border-slate-800"
-              : "bg-[var(--bg-card)] text-[var(--fg-muted)] border-[var(--border)] hover:border-slate-400"
+              : "bg-(--bg-card) text-(--fg-muted) border-(--border) hover:border-slate-400"
           }`}
         >
           {t("allTypes")}
@@ -112,10 +112,10 @@ export function IdeasFilters({
               className={`flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${
                 active
                   ? `${cfg.bg} text-white border-transparent`
-                  : `bg-[var(--bg-card)] ${cfg.color} border-[var(--border)] hover:border-current`
+                  : `bg-(--bg-card) ${cfg.color} border-(--border) hover:border-current`
               }`}
             >
-              <span className={`w-2 h-2 rounded-full ${active ? "bg-[var(--bg-card)]" : cfg.dot}`} />
+              <span className={`w-2 h-2 rounded-full ${active ? "bg-(--bg-card)" : cfg.dot}`} />
               {typeLabels[type]}
             </button>
           )
@@ -129,7 +129,7 @@ export function IdeasFilters({
           className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${
             statusFilter === "ALL"
               ? "bg-slate-800 text-white border-slate-800"
-              : "bg-[var(--bg-card)] text-[var(--fg-muted)] border-[var(--border)] hover:border-slate-400"
+              : "bg-(--bg-card) text-(--fg-muted) border-(--border) hover:border-slate-400"
           }`}
         >
           {t("allStatuses")}
@@ -141,7 +141,7 @@ export function IdeasFilters({
               key={status}
               onClick={() => onStatusFilter(active ? "ALL" : status)}
               className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${
-                active ? statusActiveColors[status] : `bg-[var(--bg-card)] ${statusColors[status]} hover:opacity-80`
+                active ? statusActiveColors[status] : `bg-(--bg-card) ${statusColors[status]} hover:opacity-80`
               }`}
             >
               {statusLabels[status]}

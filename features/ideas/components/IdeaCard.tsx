@@ -7,7 +7,7 @@ import { ideaTypeConfig } from "@/features/ideas/types/idea-types"
 import { formatDate } from "@/shared/lib/format"
 
 const statusStyles: Record<IdeaStatus, string> = {
-  DRAFT:       "bg-slate-100 text-[var(--fg-muted)]",
+  DRAFT:       "bg-slate-100 text-(--fg-muted)",
   IN_PROGRESS: "bg-blue-100 text-blue-700",
   DONE:        "bg-green-100 text-green-700",
   ARCHIVED:    "bg-amber-100 text-amber-700",
@@ -39,7 +39,7 @@ export function IdeaCard({ idea }: { idea: Idea }) {
   const isLong = !!idea.description && idea.description.length > DESCRIPTION_LIMIT
 
   return (
-    <div className="bg-[var(--bg-card)] rounded-2xl border border-[var(--border)] shadow-sm hover:shadow-lg transition-all duration-200 overflow-hidden flex">
+    <div className="bg-(--bg-card) rounded-2xl border border-(--border) shadow-sm hover:shadow-lg transition-all duration-200 overflow-hidden flex">
       {/* Panneau gauche colore */}
       <div className={`w-24 shrink-0 ${cfg.bg} flex flex-col items-center justify-center gap-2 p-3`}>
         <Icon className="w-8 h-8 text-white" strokeWidth={1.5} />
@@ -52,7 +52,7 @@ export function IdeaCard({ idea }: { idea: Idea }) {
       <div className="flex-1 p-4 flex flex-col gap-2 min-w-0">
         {/* Date + Status */}
         <div className="flex items-center justify-between gap-2">
-          <p className="text-xs text-[var(--fg-muted)]">
+          <p className="text-xs text-(--fg-muted)">
             {formatDate(idea.createdAt, locale)}
           </p>
           <span className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0 ${statusStyles[idea.status]}`}>
@@ -61,14 +61,14 @@ export function IdeaCard({ idea }: { idea: Idea }) {
         </div>
 
         {/* Titre */}
-        <h3 className="font-bold text-[var(--fg)] text-base leading-snug line-clamp-1">
+        <h3 className="font-bold text-(--fg) text-base leading-snug line-clamp-1">
           {idea.title}
         </h3>
 
         {/* Description */}
         {idea.description && (
           <div>
-            <p className={`text-[var(--fg-muted)] text-sm leading-relaxed ${expanded ? "" : "line-clamp-2"}`}>
+            <p className={`text-(--fg-muted) text-sm leading-relaxed ${expanded ? "" : "line-clamp-2"}`}>
               {idea.description}
             </p>
             {isLong && (

@@ -13,10 +13,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const t = await getTranslations("home")
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center px-4 bg-[var(--bg-card)]">
+    <main className="min-h-screen flex flex-col items-center justify-center px-4 bg-(--bg-card)">
       <div className="text-center max-w-xl">
         <span className="text-5xl font-bold text-primary tracking-tight">idea.</span>
-        <h1 className="mt-6 text-3xl font-semibold text-[var(--fg)] leading-tight">{t("hero")}</h1>
+        <h1 className="mt-6 text-3xl font-semibold text-(--fg) leading-tight">{t("hero")}</h1>
         <p className="mt-3 text-slate-500 text-lg">{t("heroSub")}</p>
         <div className="mt-8 flex gap-3 justify-center">
           <Link
@@ -28,7 +28,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </Link>
           <Link
             href={`/${locale}/auth/signin`}
-            className="inline-flex items-center gap-2 border border-[var(--border)] text-[var(--fg)] px-6 py-3 rounded-xl font-medium hover:bg-[var(--bg)] transition-colors"
+            className="inline-flex items-center gap-2 border border-(--border) text-(--fg) px-6 py-3 rounded-xl font-medium hover:bg-(--bg) transition-colors"
           >
             <LogIn className="w-4 h-4" />
             {t("ctaSignIn")}
