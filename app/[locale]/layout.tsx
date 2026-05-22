@@ -7,6 +7,7 @@ import { routing } from "@/shared/i18n/routing"
 import { SessionProvider } from "next-auth/react"
 import { auth } from "@/shared/lib/auth"
 import { QueryProvider } from "@/shared/providers/QueryProvider"
+import { Toaster } from "@/shared/components/ui/Toaster"
 import "../globals.css"
 
 const poppins = Poppins({
@@ -47,6 +48,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
           <QueryProvider>
             <NextIntlClientProvider messages={messages}>
               {children}
+              <Toaster />
             </NextIntlClientProvider>
           </QueryProvider>
         </SessionProvider>

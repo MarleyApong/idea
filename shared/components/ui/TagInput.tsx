@@ -3,7 +3,7 @@
 import { useState, useRef, KeyboardEvent, useEffect } from "react"
 import { X } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
-import { api } from "@/shared/lib/axios"
+import { getSavedTags } from "@/shared/services/tags.service"
 
 interface TagInputProps {
   name: string
@@ -12,11 +12,6 @@ interface TagInputProps {
   label?: string
   hint?: string
   color?: string
-}
-
-async function fetchSavedTags(): Promise<string[]> {
-  const { data } = await api.get<string[]>("/tags")
-  return data
 }
 
 export function TagInput({ name, defaultValue = "", placeholder, label, color = "text-primary" }: TagInputProps) {
@@ -31,7 +26,7 @@ export function TagInput({ name, defaultValue = "", placeholder, label, color = 
 
   const { data: savedTags = [] } = useQuery({
     queryKey: ["tags"],
-    queryFn: fetchSavedTags,
+    queryFn: getSavedTags,
     staleTime: 60 * 1000,
   })
 

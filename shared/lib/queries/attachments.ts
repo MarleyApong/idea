@@ -1,36 +1,42 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import type { Attachment } from "@prisma/client"
-import { api } from "@/shared/lib/axios"
+import { getAttachments, uploadAttachment, deleteAttachment } from "@/shared/services/attachments.service"
+import { useNotifications } from "@/shared/store/notifications"
 
 export const attachmentsKey = (ideaId: string) => ["attachments", ideaId]
 
+export function useAttachments(ideaId: string, initialData: Attachment[]) {
+  return useQuery({
+    queryKey: attachmentsKey(ideaId),
+    queryFn: () => getAttachments(ideaId),
+    initialData,
+  })
+}
+
 export function useUploadAttachment(ideaId: string) {
   const queryClient = useQueryClient()
+  const { success, error } = useNotifications()
 
   return useMutation({
-    mutationFn: async (file: File): Promise<Attachment> => {
-      const formData = new FormData()
-      formData.append("file", file)
-      formData.append("ideaId", ideaId)
-      const { data } = await api.post<Attachment>("/upload", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
-      return data
-    },
+    mutationFn: (file: File) => uploadAttachment(file, ideaId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: attachmentsKey(ideaId) })
+      success("Fichier televerse avec succes")
     },
+    onError: (err: Error) => error(err.message),
   })
 }
 
 export function useDeleteAttachment(ideaId: string) {
   const queryClient = useQueryClient()
+  const { success, error } = useNotifications()
+
   return useMutation({
-    mutationFn: async (attachmentId: string) => {
-      await api.delete(`/upload/${attachmentId}`)
-    },
+    mutationFn: (attachmentId: string) => deleteAttachment(attachmentId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: attachmentsKey(ideaId) })
+      success("Fichier supprime")
     },
+    onError: (err: Error) => error(err.message),
   })
 }

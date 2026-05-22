@@ -2,18 +2,11 @@
 
 import { useState } from "react"
 import type { Attachment } from "@prisma/client"
-import { useQuery } from "@tanstack/react-query"
-import { Paperclip, Trash2, FileText, Image, Download, Plus } from "lucide-react"
+import { Paperclip, Trash2, FileText, Image, Download, Plus, X } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { api } from "@/shared/lib/axios"
-import { attachmentsKey, useUploadAttachment, useDeleteAttachment } from "@/shared/lib/queries/attachments"
+import { useAttachments, useUploadAttachment, useDeleteAttachment } from "@/shared/lib/queries/attachments"
 import { FileUpload } from "@/shared/components/ui/FileUpload"
 import { Button } from "@/shared/components/ui/Button"
-
-async function fetchAttachments(ideaId: string): Promise<Attachment[]> {
-  const { data } = await api.get<Attachment[]>(`/ideas/${ideaId}/attachments`)
-  return data
-}
 
 function AttachmentIcon({ mimeType }: { mimeType: string }) {
   if (mimeType.startsWith("image/")) return <Image className="w-5 h-5 text-blue-500" />
@@ -26,35 +19,20 @@ function formatSize(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
-interface IdeaAttachmentsProps {
-  ideaId: string
-  initialAttachments: Attachment[]
-}
-
-export function IdeaAttachments({ ideaId, initialAttachments }: IdeaAttachmentsProps) {
+export function IdeaAttachments({ ideaId, initialAttachments }: { ideaId: string; initialAttachments: Attachment[] }) {
   const t = useTranslations("attachments")
   const [showUpload, setShowUpload] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [uploadError, setUploadError] = useState("")
 
-  const { data: attachments = initialAttachments } = useQuery({
-    queryKey: attachmentsKey(ideaId),
-    queryFn: () => fetchAttachments(ideaId),
-    initialData: initialAttachments,
-  })
+  const { data: attachments = initialAttachments } = useAttachments(ideaId, initialAttachments)
 
   const { mutate: upload, isPending: uploading } = useUploadAttachment(ideaId)
-  const { mutate: deleteAttachment } = useDeleteAttachment(ideaId)
+  const { mutate: remove, isPending: removing } = useDeleteAttachment(ideaId)
 
   function handleUpload() {
     if (!selectedFile) return
-    setUploadError("")
     upload(selectedFile, {
-      onSuccess: () => {
-        setSelectedFile(null)
-        setShowUpload(false)
-      },
-      onError: (err) => setUploadError(err.message),
+      onSuccess: () => { setSelectedFile(null); setShowUpload(false) },
     })
   }
 
@@ -65,24 +43,23 @@ export function IdeaAttachments({ ideaId, initialAttachments }: IdeaAttachmentsP
           <Paperclip className="w-4 h-4 text-slate-400" />
           <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{t("title")}</p>
           {attachments.length > 0 && (
-            <span className="text-xs bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded-full">
+            <span className="text-xs bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded-full font-medium">
               {attachments.length}
             </span>
           )}
         </div>
         <Button variant="ghost" size="sm" onClick={() => setShowUpload(!showUpload)}>
-          <Plus className="w-4 h-4" />
-          {t("add")}
+          {showUpload ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+          {showUpload ? t("cancel") : t("add")}
         </Button>
       </div>
 
       {showUpload && (
-        <div className="mb-4 space-y-3 p-4 bg-slate-50 rounded-xl border border-slate-200">
+        <div className="mb-4 p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
           <FileUpload
             selectedFile={selectedFile}
             onFileSelect={setSelectedFile}
             onFileRemove={() => setSelectedFile(null)}
-            error={uploadError}
           />
           {selectedFile && (
             <div className="flex gap-2">
@@ -109,12 +86,17 @@ export function IdeaAttachments({ ideaId, initialAttachments }: IdeaAttachmentsP
                 <p className="text-xs text-slate-400">{formatSize(att.size)}</p>
               </div>
               <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <a href={att.url} download={att.filename} className="p-1.5 rounded-lg text-slate-400 hover:text-primary hover:bg-white transition-colors">
+                <a
+                  href={att.url}
+                  download={att.filename}
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-primary hover:bg-white transition-colors"
+                >
                   <Download className="w-4 h-4" />
                 </a>
                 <button
-                  onClick={() => deleteAttachment(att.id)}
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-white transition-colors"
+                  onClick={() => remove(att.id)}
+                  disabled={removing}
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-white transition-colors disabled:opacity-40"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
