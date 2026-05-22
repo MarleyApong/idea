@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import { useTranslations } from "next-intl"
 import { X, Check, Ban } from "lucide-react"
 import { IdeaType } from "@prisma/client"
@@ -9,6 +9,7 @@ import { ideaTypeConfig } from "@/shared/lib/idea-types"
 import { Button } from "@/shared/components/ui/Button"
 import { Input } from "@/shared/components/ui/Input"
 import { Textarea } from "@/shared/components/ui/Textarea"
+import { TagInput } from "@/shared/components/ui/TagInput"
 
 interface NewIdeaModalProps {
   locale: string
@@ -21,10 +22,12 @@ export function NewIdeaModal({ locale, onClose }: NewIdeaModalProps) {
   const t = useTranslations("ideas")
   const formRef = useRef<HTMLFormElement>(null)
   const { mutate, isPending, error } = useCreateIdea(locale)
+  const [selectedType, setSelectedType] = useState<IdeaType>("PROJET")
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
+    formData.set("type", selectedType)
     mutate(formData, {
       onSuccess: () => {
         formRef.current?.reset()
@@ -58,22 +61,21 @@ export function NewIdeaModal({ locale, onClose }: NewIdeaModalProps) {
           <div>
             <p className="text-sm font-medium text-slate-700 mb-2">{t("type")}</p>
             <div className="grid grid-cols-4 gap-2">
-              {types.map((type, i) => {
+              {types.map((type) => {
                 const cfg = ideaTypeConfig[type]
+                const active = selectedType === type
                 return (
-                  <label key={type} className="cursor-pointer">
-                    <input
-                      type="radio"
-                      name="type"
-                      value={type}
-                      defaultChecked={i === 0}
-                      className="sr-only peer"
-                    />
-                    <div className={`flex flex-col items-center gap-1.5 px-2 py-2.5 rounded-xl border-2 border-transparent peer-checked:border-current peer-checked:${cfg.bg} ${cfg.color} hover:${cfg.bg} transition-colors`}>
-                      <span className={`w-3 h-3 rounded-full ${cfg.dot}`} />
-                      <span className="text-xs font-medium">{typeLabels[type]}</span>
-                    </div>
-                  </label>
+                  <button
+                    key={type}
+                    type="button"
+                    onClick={() => setSelectedType(type)}
+                    className={`flex flex-col items-center gap-1.5 px-2 py-2.5 rounded-xl border-2 transition-all ${
+                      active ? `${cfg.bg} border-transparent` : "border-slate-200 hover:border-slate-300"
+                    } ${cfg.color}`}
+                  >
+                    <span className={`w-3 h-3 rounded-full ${cfg.dot}`} />
+                    <span className="text-xs font-medium">{typeLabels[type]}</span>
+                  </button>
                 )
               })}
             </div>
@@ -97,12 +99,11 @@ export function NewIdeaModal({ locale, onClose }: NewIdeaModalProps) {
             placeholder={t("descPlaceholder")}
           />
 
-          <Input
-            id="tags"
+          <TagInput
             name="tags"
             label={t("tags")}
-            hint={t("tagsHint").toLowerCase()}
             placeholder={t("tagsPlaceholder")}
+            color={ideaTypeConfig[selectedType].color}
           />
 
           {error && <p className="text-sm text-red-500">{error.message}</p>}

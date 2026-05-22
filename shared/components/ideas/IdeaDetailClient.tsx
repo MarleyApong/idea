@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import type { Idea, IdeaType, IdeaStatus } from "@prisma/client"
 import { ArrowLeft, Pencil, Trash2, AlertTriangle, Check, Archive } from "lucide-react"
 import { ideaTypeConfig } from "@/shared/lib/idea-types"
+import { formatDate } from "@/shared/lib/format"
 import { useDeleteIdea } from "@/shared/lib/queries/ideas"
 import { Button } from "@/shared/components/ui/Button"
 import { EditIdeaModal } from "./EditIdeaModal"
@@ -143,8 +144,8 @@ export function IdeaDetailClient({ idea, locale }: { idea: Idea; locale: string 
         {/* Contenu */}
         <div className="px-6 py-5 space-y-5 border-t border-slate-100">
           <div className="flex flex-wrap gap-3 text-xs text-slate-400">
-            <span>{t("createdAt")} {new Date(idea.createdAt).toLocaleDateString()}</span>
-            <span>{t("updatedAt")} {new Date(idea.updatedAt).toLocaleDateString()}</span>
+            <span>{t("createdAt")} {formatDate(idea.createdAt, locale)}</span>
+            <span>{t("updatedAt")} {formatDate(idea.updatedAt, locale)}</span>
           </div>
 
           {idea.description ? (

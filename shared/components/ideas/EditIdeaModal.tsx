@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import { useTranslations } from "next-intl"
 import { X, Check, Ban } from "lucide-react"
 import type { Idea, IdeaType, IdeaStatus } from "@prisma/client"
@@ -9,22 +9,16 @@ import { ideaTypeConfig } from "@/shared/lib/idea-types"
 import { Button } from "@/shared/components/ui/Button"
 import { Input } from "@/shared/components/ui/Input"
 import { Textarea } from "@/shared/components/ui/Textarea"
+import { TagInput } from "@/shared/components/ui/TagInput"
 
 const types: IdeaType[] = ["PROJET", "INSPIRATION", "RAPPEL", "AUTRE"]
 const statuses: IdeaStatus[] = ["DRAFT", "IN_PROGRESS", "DONE", "ARCHIVED"]
 
-const statusColors: Record<IdeaStatus, string> = {
-  DRAFT:       "bg-slate-100 text-slate-600",
-  IN_PROGRESS: "bg-blue-100 text-blue-700",
-  DONE:        "bg-green-100 text-green-700",
-  ARCHIVED:    "bg-amber-100 text-amber-700",
-}
-
-const statusActiveColors: Record<IdeaStatus, string> = {
-  DRAFT:       "bg-slate-500 text-white",
-  IN_PROGRESS: "bg-blue-600 text-white",
-  DONE:        "bg-green-600 text-white",
-  ARCHIVED:    "bg-amber-500 text-white",
+const statusConfig: Record<IdeaStatus, { idle: string; active: string }> = {
+  DRAFT:       { idle: "bg-slate-100 text-slate-600 hover:bg-slate-200",       active: "bg-slate-600 text-white"   },
+  IN_PROGRESS: { idle: "bg-blue-100 text-blue-700 hover:bg-blue-200",          active: "bg-blue-600 text-white"    },
+  DONE:        { idle: "bg-green-100 text-green-700 hover:bg-green-200",        active: "bg-green-600 text-white"   },
+  ARCHIVED:    { idle: "bg-amber-100 text-amber-700 hover:bg-amber-200",        active: "bg-amber-500 text-white"   },
 }
 
 interface EditIdeaModalProps {
@@ -37,6 +31,8 @@ export function EditIdeaModal({ idea, locale, onClose }: EditIdeaModalProps) {
   const t = useTranslations("ideas")
   const formRef = useRef<HTMLFormElement>(null)
   const { mutate, isPending, error } = useUpdateIdea(idea.id, locale)
+  const [selectedType, setSelectedType] = useState<IdeaType>(idea.type ?? "PROJET")
+  const [selectedStatus, setSelectedStatus] = useState<IdeaStatus>(idea.status ?? "DRAFT")
 
   const typeLabels: Record<IdeaType, string> = {
     PROJET:      t("typeProjet"),
@@ -55,6 +51,8 @@ export function EditIdeaModal({ idea, locale, onClose }: EditIdeaModalProps) {
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
+    formData.set("type", selectedType)
+    formData.set("status", selectedStatus)
     mutate(formData, { onSuccess: onClose })
   }
 
@@ -78,14 +76,21 @@ export function EditIdeaModal({ idea, locale, onClose }: EditIdeaModalProps) {
             <div className="grid grid-cols-4 gap-2">
               {types.map((type) => {
                 const cfg = ideaTypeConfig[type]
+                const active = selectedType === type
                 return (
-                  <label key={type} className="cursor-pointer">
-                    <input type="radio" name="type" value={type} defaultChecked={idea.type === type} className="sr-only peer" />
-                    <div className={`flex flex-col items-center gap-1.5 px-2 py-2.5 rounded-xl border-2 border-transparent peer-checked:border-current peer-checked:${cfg.bg.replace("bg-", "bg-").replace("500", "100")} ${cfg.color} hover:bg-slate-50 transition-colors`}>
-                      <span className={`w-3 h-3 rounded-full ${cfg.dot}`} />
-                      <span className="text-xs font-medium">{typeLabels[type]}</span>
-                    </div>
-                  </label>
+                  <button
+                    key={type}
+                    type="button"
+                    onClick={() => setSelectedType(type)}
+                    className={`flex flex-col items-center gap-1.5 px-2 py-2.5 rounded-xl border-2 transition-all ${
+                      active
+                        ? `${cfg.bg} border-transparent`
+                        : "border-slate-200 hover:border-slate-300"
+                    } ${cfg.color}`}
+                  >
+                    <span className={`w-3 h-3 rounded-full ${cfg.dot}`} />
+                    <span className="text-xs font-medium">{typeLabels[type]}</span>
+                  </button>
                 )
               })}
             </div>
@@ -93,24 +98,53 @@ export function EditIdeaModal({ idea, locale, onClose }: EditIdeaModalProps) {
 
           {/* Status */}
           <div>
-            <p className="text-sm font-medium text-slate-700 mb-2">{t("status") ?? "Statut"}</p>
+            <p className="text-sm font-medium text-slate-700 mb-2">{t("status")}</p>
             <div className="flex flex-wrap gap-2">
-              {statuses.map((status) => (
-                <label key={status} className="cursor-pointer">
-                  <input type="radio" name="status" value={status} defaultChecked={idea.status === status} className="sr-only peer" />
-                  <div className={`text-xs font-medium px-3 py-1.5 rounded-full border-2 border-transparent peer-checked:border-current ${statusColors[status]} peer-checked:${statusActiveColors[status]} transition-colors cursor-pointer`}>
+              {statuses.map((status) => {
+                const active = selectedStatus === status
+                const cfg = statusConfig[status]
+                return (
+                  <button
+                    key={status}
+                    type="button"
+                    onClick={() => setSelectedStatus(status)}
+                    className={`text-xs font-semibold px-4 py-2 rounded-full transition-all ${
+                      active ? cfg.active : cfg.idle
+                    }`}
+                  >
                     {statusLabels[status]}
-                  </div>
-                </label>
-              ))}
+                  </button>
+                )
+              })}
             </div>
           </div>
 
-          <Input id="title" name="title" required label={t("titleLabel")} defaultValue={idea.title} placeholder={t("titlePlaceholder")} />
+          <Input
+            id="title"
+            name="title"
+            required
+            label={t("titleLabel")}
+            defaultValue={idea.title}
+            placeholder={t("titlePlaceholder")}
+          />
 
-          <Textarea id="description" name="description" rows={3} label={t("description")} hint={t("optional")} defaultValue={idea.description ?? ""} placeholder={t("descPlaceholder")} />
+          <Textarea
+            id="description"
+            name="description"
+            rows={3}
+            label={t("description")}
+            hint={t("optional")}
+            defaultValue={idea.description ?? ""}
+            placeholder={t("descPlaceholder")}
+          />
 
-          <Input id="tags" name="tags" label={t("tags")} hint={t("tagsHint").toLowerCase()} defaultValue={idea.tags.join(", ")} placeholder={t("tagsPlaceholder")} />
+          <TagInput
+            name="tags"
+            label={t("tags")}
+            defaultValue={idea.tags.join(",")}
+            placeholder={t("tagsPlaceholder")}
+            color={(ideaTypeConfig[selectedType] ?? ideaTypeConfig.PROJET).color}
+          />
 
           {error && <p className="text-sm text-red-500">{error.message}</p>}
 

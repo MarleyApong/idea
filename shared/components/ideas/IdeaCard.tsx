@@ -2,8 +2,9 @@
 
 import { useState } from "react"
 import type { Idea, IdeaStatus, IdeaType } from "@prisma/client"
-import { useTranslations } from "next-intl"
+import { useTranslations, useLocale } from "next-intl"
 import { ideaTypeConfig } from "@/shared/lib/idea-types"
+import { formatDate } from "@/shared/lib/format"
 
 const statusStyles: Record<IdeaStatus, string> = {
   DRAFT:       "bg-slate-100 text-slate-500",
@@ -16,6 +17,7 @@ const DESCRIPTION_LIMIT = 100
 
 export function IdeaCard({ idea }: { idea: Idea }) {
   const t = useTranslations("ideas")
+  const locale = useLocale()
   const [expanded, setExpanded] = useState(false)
 
   const typeLabels: Record<IdeaType, string> = {
@@ -51,7 +53,7 @@ export function IdeaCard({ idea }: { idea: Idea }) {
         {/* Date + Status */}
         <div className="flex items-center justify-between gap-2">
           <p className="text-xs text-slate-400">
-            {new Date(idea.createdAt).toLocaleDateString()}
+            {formatDate(idea.createdAt, locale)}
           </p>
           <span className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0 ${statusStyles[idea.status]}`}>
             {statusLabels[idea.status]}
