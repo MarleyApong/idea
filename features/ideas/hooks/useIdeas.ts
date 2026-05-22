@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import type { Idea } from "@prisma/client"
-import { getIdeas } from "@/shared/services/ideas.service"
-import { createIdea, updateIdea, deleteIdea } from "@/shared/lib/actions/ideas"
+import { getIdeas } from "@/features/ideas/services/ideas.service"
+import { createIdea, updateIdea, deleteIdea } from "@/features/ideas/actions/ideas"
 import { useNotifications } from "@/shared/store/notifications"
 
 export const IDEAS_KEY = ["ideas"] as const

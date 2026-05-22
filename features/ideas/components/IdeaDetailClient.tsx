@@ -5,12 +5,12 @@ import { useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
 import type { Idea, IdeaType, IdeaStatus, Attachment } from "@prisma/client"
 import { ArrowLeft, Pencil, Trash2, AlertTriangle, Check, Archive } from "lucide-react"
-import { ideaTypeConfig } from "@/shared/lib/idea-types"
+import { ideaTypeConfig } from "@/features/ideas/types/idea-types"
 import { formatDate } from "@/shared/lib/format"
-import { useDeleteIdea } from "@/shared/lib/queries/ideas"
+import { useDeleteIdea } from "@/features/ideas/hooks/useIdeas"
 import { Button } from "@/shared/components/ui/Button"
 import { EditIdeaModal } from "./EditIdeaModal"
-import { IdeaAttachments } from "./IdeaAttachments"
+import { IdeaAttachments } from "@/features/attachments/components/IdeaAttachments"
 
 const steps: { status: IdeaStatus; percent: number }[] = [
   { status: "DRAFT",       percent: 0   },

@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react"
 import { Search, X } from "lucide-react"
 import { useTranslations } from "next-intl"
 import type { IdeaStatus, IdeaType } from "@prisma/client"
-import { ideaTypeConfig } from "@/shared/lib/idea-types"
+import { ideaTypeConfig } from "@/features/ideas/types/idea-types"
 
 interface IdeasFiltersProps {
   search: string

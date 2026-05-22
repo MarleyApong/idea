@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import type { Attachment } from "@prisma/client"
-import { getAttachments, uploadAttachment, deleteAttachment } from "@/shared/services/attachments.service"
+import { getAttachments, uploadAttachment, deleteAttachment } from "@/features/attachments/services/attachments.service"
 import { useNotifications } from "@/shared/store/notifications"
 
 export const attachmentsKey = (ideaId: string) => ["attachments", ideaId]

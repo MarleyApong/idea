@@ -3,7 +3,7 @@
 import { useState } from "react"
 import type { Idea, IdeaStatus, IdeaType } from "@prisma/client"
 import { useTranslations, useLocale } from "next-intl"
-import { ideaTypeConfig } from "@/shared/lib/idea-types"
+import { ideaTypeConfig } from "@/features/ideas/types/idea-types"
 import { formatDate } from "@/shared/lib/format"
 
 const statusStyles: Record<IdeaStatus, string> = {

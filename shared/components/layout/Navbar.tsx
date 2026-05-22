@@ -2,6 +2,7 @@ import { auth } from "@/shared/lib/auth"
 import { signOutAction } from "@/shared/lib/actions/auth"
 import { getTranslations } from "next-intl/server"
 import { LogOut, Lightbulb, Tag } from "lucide-react"
+import Image from "next/image"
 import Link from "next/link"
 import { LocaleSwitcher } from "./LocaleSwitcher"
 
@@ -38,11 +39,13 @@ export async function Navbar({ locale }: { locale: string }) {
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
                 {session.user?.image ? (
-                  <img
+                  <Image
                     src={session.user.image}
                     alt={session.user.name ?? ""}
+                    width={32}
+                    height={32}
                     referrerPolicy="no-referrer"
-                    className="w-8 h-8 rounded-full object-cover"
+                    className="rounded-full object-cover"
                   />
                 ) : (
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">

@@ -3,7 +3,7 @@
 import { useState, useRef, KeyboardEvent, useEffect } from "react"
 import { X } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
-import { getSavedTags } from "@/shared/services/tags.service"
+import { getSavedTags } from "@/features/tags/services/tags.service"
 
 interface TagInputProps {
   name: string

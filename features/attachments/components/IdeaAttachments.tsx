@@ -4,7 +4,7 @@ import { useState } from "react"
 import type { Attachment } from "@prisma/client"
 import { Paperclip, Trash2, FileText, Image, Download, Plus, X } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { useAttachments, useUploadAttachment, useDeleteAttachment } from "@/shared/lib/queries/attachments"
+import { useAttachments, useUploadAttachment, useDeleteAttachment } from "@/features/attachments/hooks/useAttachments"
 import { FileUpload } from "@/shared/components/ui/FileUpload"
 import { Button } from "@/shared/components/ui/Button"
 

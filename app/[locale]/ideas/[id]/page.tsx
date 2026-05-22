@@ -2,7 +2,7 @@ import { auth } from "@/shared/lib/auth"
 import { redirect, notFound } from "next/navigation"
 import { prisma } from "@/shared/lib/prisma"
 import { Navbar } from "@/shared/components/layout/Navbar"
-import { IdeaDetailClient } from "@/shared/components/ideas/IdeaDetailClient"
+import { IdeaDetailClient } from "@/features/ideas/components/IdeaDetailClient"
 
 export default async function IdeaDetailPage({
   params,

@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef } from "react"
 import { UploadCloud, X, FileText, FileImage, FileType } from "lucide-react"
+import Image from "next/image"
 import imageCompression from "browser-image-compression"
 
 export interface FileUploadProps {
@@ -106,7 +107,7 @@ export function FileUpload({
         /* Fichier selectionne */
         <div className="flex items-center gap-3 p-4 bg-white rounded-xl border-2 border-primary/30 shadow-sm">
           {preview ? (
-            <img src={preview} alt="" className="w-14 h-14 rounded-lg object-cover shrink-0 border border-slate-200" />
+            <Image src={preview} alt="" width={56} height={56} unoptimized className="rounded-lg object-cover shrink-0 border border-slate-200" />
           ) : (
             <div className="w-14 h-14 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
               <FileTypeIcon file={selectedFile} />

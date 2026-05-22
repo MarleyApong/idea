@@ -2,7 +2,7 @@ import { auth } from "@/shared/lib/auth"
 import { redirect } from "next/navigation"
 import { prisma } from "@/shared/lib/prisma"
 import { Navbar } from "@/shared/components/layout/Navbar"
-import { IdeasPageClient } from "@/shared/components/ideas/IdeasPageClient"
+import { IdeasPageClient } from "@/features/ideas/components/IdeasPageClient"
 
 export default async function IdeasPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params

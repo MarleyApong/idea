@@ -3,7 +3,7 @@ import { redirect } from "next/navigation"
 import { prisma } from "@/shared/lib/prisma"
 import { getTranslations } from "next-intl/server"
 import { Navbar } from "@/shared/components/layout/Navbar"
-import { TagsPageClient } from "@/shared/components/tags/TagsPageClient"
+import { TagsPageClient } from "@/features/tags/components/TagsPageClient"
 
 export default async function TagsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
