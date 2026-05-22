@@ -37,15 +37,13 @@ export function TagInput({ name, defaultValue = "", placeholder, label, color = 
 
   const suggestions = savedTags.filter(
     (t) =>
-      t.toLowerCase().includes(input.toLowerCase()) &&
-      input.length > 0 &&
-      !tags.includes(t)
+      !tags.includes(t) &&
+      (input.length === 0 || t.toLowerCase().includes(input.toLowerCase()))
   )
 
   useEffect(() => {
     setHighlighted(0)
-    setOpen(suggestions.length > 0)
-  }, [input, suggestions.length])
+  }, [input])
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {

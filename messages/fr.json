@@ -14,6 +14,7 @@
   },
   "nav": {
     "myIdeas": "Mes idees",
+    "myTags": "Mes tags",
     "newIdea": "Nouvelle idee",
     "signOut": "Se deconnecter",
     "settings": "Parametres"
@@ -62,6 +63,11 @@
     "status": "Statut",
     "confirmDeleteTitle": "Supprimer cette idee ?",
     "confirmDeleteDesc": "Cette action est irreversible."
+  },
+  "tags": {
+    "title": "Mes tags",
+    "empty": "Aucun tag pour le moment. Ajoutez des tags a vos idees.",
+    "ideas": "idee(s)"
   },
   "home": {
     "hero": "Ne perdez plus jamais une bonne idee",

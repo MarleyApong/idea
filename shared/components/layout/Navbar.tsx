@@ -1,7 +1,7 @@
 import { auth } from "@/shared/lib/auth"
 import { signOutAction } from "@/shared/lib/actions/auth"
 import { getTranslations } from "next-intl/server"
-import { LogOut, Lightbulb } from "lucide-react"
+import { LogOut, Lightbulb, Tag } from "lucide-react"
 import Link from "next/link"
 import { LocaleSwitcher } from "./LocaleSwitcher"
 
@@ -20,6 +20,19 @@ export async function Navbar({ locale }: { locale: string }) {
 
         <div className="flex items-center gap-2">
           <LocaleSwitcher locale={locale} />
+
+          {session && (
+            <nav className="hidden sm:flex items-center gap-1 mr-2">
+              <Link href={`/${locale}/ideas`} className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-primary px-3 py-1.5 rounded-lg hover:bg-slate-50 transition-colors font-medium">
+                <Lightbulb className="w-4 h-4" />
+                {t("myIdeas")}
+              </Link>
+              <Link href={`/${locale}/tags`} className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-primary px-3 py-1.5 rounded-lg hover:bg-slate-50 transition-colors font-medium">
+                <Tag className="w-4 h-4" />
+                {t("myTags")}
+              </Link>
+            </nav>
+          )}
 
           {session ? (
             <div className="flex items-center gap-3">

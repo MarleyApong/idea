@@ -14,6 +14,7 @@
   },
   "nav": {
     "myIdeas": "My ideas",
+    "myTags": "My tags",
     "newIdea": "New idea",
     "signOut": "Sign out",
     "settings": "Settings"
@@ -62,6 +63,11 @@
     "status": "Status",
     "confirmDeleteTitle": "Delete this idea?",
     "confirmDeleteDesc": "This action cannot be undone."
+  },
+  "tags": {
+    "title": "My tags",
+    "empty": "No tags yet. Add tags to your ideas.",
+    "ideas": "idea(s)"
   },
   "home": {
     "hero": "Never lose a great idea again",
