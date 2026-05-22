@@ -54,11 +54,6 @@ export async function POST(req: NextRequest) {
     return apiError("INVALID_MIME_TYPE", `Type de fichier non accepte : "${file.type}". Types autorises : ${Object.keys(ACCEPTED_TYPES).join(", ")}`)
   }
 
-  const ext = "." + file.name.split(".").pop()?.toLowerCase()
-  if (!mimeConfig.ext.includes(ext)) {
-    return apiError("EXTENSION_MISMATCH", `Extension "${ext}" incompatible avec le type "${file.type}"`)
-  }
-
   const bytes = await file.arrayBuffer()
   const buffer = Buffer.from(bytes)
 
@@ -66,17 +61,28 @@ export async function POST(req: NextRequest) {
     return apiError("INVALID_FILE_CONTENT", "Le contenu du fichier ne correspond pas a son type declare")
   }
 
+  // Normaliser le nom : si l'extension ne correspond pas au MIME (ex: .blob apres compression),
+  // on utilise l'extension canonique du MIME type
+  const rawExt = "." + file.name.split(".").pop()?.toLowerCase()
+  const canonicalExt = mimeConfig.ext[0]
+  const hasValidExt = mimeConfig.ext.includes(rawExt)
+  const baseName = hasValidExt
+    ? file.name.replace(/\s+/g, "_")
+    : (file.name.replace(/\.[^.]+$/, "") || "fichier").replace(/\s+/g, "_") + canonicalExt
+
   try {
     const uploadDir = join(process.cwd(), "public", "uploads", session.user.id)
     await mkdir(uploadDir, { recursive: true })
 
-    const uniqueName = `${Date.now()}-${file.name.replace(/\s+/g, "_")}`
+    const uniqueName = `${Date.now()}-${baseName}`
     await writeFile(join(uploadDir, uniqueName), buffer)
 
     const url = `/uploads/${session.user.id}/${uniqueName}`
 
+    const title = (formData.get("title") as string | null)?.trim() || null
+
     const attachment = await prisma.attachment.create({
-      data: { url, filename: file.name, mimeType: file.type, size: file.size, ideaId },
+      data: { url, filename: baseName, mimeType: file.type, size: file.size, ideaId, title },
     })
 
     return NextResponse.json(attachment, { status: 201 })

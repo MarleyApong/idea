@@ -70,7 +70,9 @@
     "upload": "Upload",
     "uploading": "Uploading...",
     "cancel": "Cancel",
-    "empty": "No attachments."
+    "empty": "No attachments.",
+    "titleField": "Title",
+    "titlePlaceholder": "E.g. Mockup, Contract, Notes..."
   },
   "tags": {
     "title": "My tags",

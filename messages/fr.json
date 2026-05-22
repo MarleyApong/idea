@@ -70,7 +70,9 @@
     "upload": "Televerser",
     "uploading": "En cours...",
     "cancel": "Annuler",
-    "empty": "Aucune piece jointe."
+    "empty": "Aucune piece jointe.",
+    "titleField": "Titre",
+    "titlePlaceholder": "Ex: Maquette, Contrat, Notes..."
   },
   "tags": {
     "title": "Mes tags",

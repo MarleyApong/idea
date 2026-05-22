@@ -18,7 +18,8 @@ export function useUploadAttachment(ideaId: string) {
   const { success, error } = useNotifications()
 
   return useMutation({
-    mutationFn: (file: File) => uploadAttachment(file, ideaId),
+    mutationFn: ({ file, title }: { file: File; title?: string }) =>
+      uploadAttachment(file, ideaId, title),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: attachmentsKey(ideaId) })
       success("Fichier televerse avec succes")
