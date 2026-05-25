@@ -2,14 +2,15 @@
 
 import { useTheme } from "next-themes"
 import { Sun, Moon, Monitor } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useSyncExternalStore } from "react"
+
+function subscribe() { return () => {} }
 
 export function ThemeSwitcher() {
   const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
+  const mounted = useSyncExternalStore(subscribe, () => true, () => false)
 
-  useEffect(() => setMounted(true), [])
-  if (!mounted) return <div className="w-[88px] h-8" />
+  if (!mounted) return <div className="w-22 h-8" />
 
   const options = [
     { value: "light",  icon: Sun,     label: "Clair"   },

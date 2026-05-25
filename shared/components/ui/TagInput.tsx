@@ -37,10 +37,6 @@ export function TagInput({ name, defaultValue = "", placeholder, label, color = 
   )
 
   useEffect(() => {
-    setHighlighted(0)
-  }, [input])
-
-  useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setOpen(false)
@@ -93,7 +89,7 @@ export function TagInput({ name, defaultValue = "", placeholder, label, color = 
 
       <div ref={containerRef} className="relative">
         <div
-          className="flex flex-wrap gap-1.5 w-full px-3 py-2 rounded-xl border border-(--border) focus-within:ring-2 focus-within:ring-primary/30 focus-within:border-primary transition-colors bg-(--bg-card) min-h-[44px] cursor-text"
+          className="flex flex-wrap gap-1.5 w-full px-3 py-2 rounded-xl border border-(--border) focus-within:ring-2 focus-within:ring-primary/30 focus-within:border-primary transition-colors bg-(--bg-card) min-h-11 cursor-text"
           onClick={() => inputRef.current?.focus()}
         >
           {tags.map((tag) => (
@@ -108,11 +104,11 @@ export function TagInput({ name, defaultValue = "", placeholder, label, color = 
             ref={inputRef}
             type="text"
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(e) => { setInput(e.target.value); setHighlighted(0) }}
             onKeyDown={handleKeyDown}
             onFocus={() => suggestions.length > 0 && setOpen(true)}
             placeholder={tags.length === 0 ? placeholder : ""}
-            className="flex-1 min-w-[80px] text-sm text-(--fg) placeholder:text-(--fg-muted) outline-none bg-transparent py-0.5"
+            className="flex-1 min-w-20 text-sm text-(--fg) placeholder:text-(--fg-muted) outline-none bg-transparent py-0.5"
           />
         </div>
 
