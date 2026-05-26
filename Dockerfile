@@ -16,10 +16,8 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Generer le client Prisma
 RUN npx prisma generate
 
-# Build Next.js
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
@@ -37,20 +35,22 @@ RUN adduser --system --uid 1001 nextjs
 # Dossier uploads persistant (monte via volume dans Coolify)
 RUN mkdir -p /app/public/uploads && chown nextjs:nodejs /app/public/uploads
 
-# Copier les fichiers de build standalone
+# Installer les dependances (inclut Prisma CLI + @prisma/engines)
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# Generer le client Prisma dans le runner (comme fm-backend)
+COPY --from=builder /app/prisma ./prisma
+RUN npx prisma generate
+
+# Copier uniquement server.js + .next depuis le standalone (pas ses node_modules)
 COPY --from=builder /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone/server.js ./server.js
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone/.next ./.next
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Schema Prisma + client genere + CLI pour les migrations
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
-COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
-
-# Script de demarrage (migrations + serveur)
-COPY --from=builder /app/scripts/start.sh ./start.sh
-RUN chmod +x ./start.sh
+COPY scripts/start.sh ./start.sh
+RUN chmod +x ./start.sh && chown nextjs:nodejs ./start.sh
 
 USER nextjs
 

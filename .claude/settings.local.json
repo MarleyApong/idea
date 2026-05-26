@@ -10,7 +10,8 @@
       "Bash(node -e \"const l = require\\('lucide-react'\\); console.log\\('Github:', 'Github' in l, 'Chrome:', 'Chrome' in l\\)\")",
       "Bash(node -e ' *)",
       "Bash(npx prisma *)",
-      "Bash(xargs grep -l \"upload\\\\|Upload\")"
+      "Bash(xargs grep -l \"upload\\\\|Upload\")",
+      "Bash(node *)"
     ]
   }
 }
