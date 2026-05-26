@@ -64,7 +64,7 @@ export function EditIdeaModal({ idea, locale, onClose }: EditIdeaModalProps) {
       <div className="bg-(--bg-card) rounded-2xl w-full max-w-lg shadow-xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-(--border)">
           <h2 className="text-lg font-semibold text-(--fg)">{t("edit")}</h2>
-          <Button variant="ghost" size="sm" type="button" onClick={onClose} className="!p-1.5 rounded-lg">
+          <Button variant="ghost" size="sm" type="button" onClick={onClose} className="p-1.5! rounded-lg">
             <X className="w-4 h-4" />
           </Button>
         </div>
