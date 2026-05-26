@@ -68,7 +68,7 @@ export function EditIdeaModal({ idea, locale, onClose }: EditIdeaModalProps) {
             <X className="w-4 h-4" />
           </Button>
         </div>
-
+ 
         <form ref={formRef} onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
           {/* Type */}
           <div>
