@@ -42,11 +42,10 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Schema Prisma + binaire genere + CLI (migrations)
-# On copie uniquement .prisma (binaire pour la plateforme cible), pas @prisma/engines (multi-plateforme, volumineux)
-# @prisma/client JS est deja dans le standalone trace par Next.js
+# Schema Prisma + client genere + CLI pour les migrations
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
 
 # Script de demarrage (migrations + serveur)
