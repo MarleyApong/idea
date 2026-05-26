@@ -41,6 +41,7 @@ RUN npm ci
 
 # Generer le client Prisma dans le runner (comme fm-backend)
 COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 RUN npx prisma generate
 
 # Copier uniquement server.js + .next depuis le standalone (pas ses node_modules)
