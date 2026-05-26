@@ -4,6 +4,7 @@ import { config } from "dotenv"
 
 // En local, charge .env.local ; en prod, les variables viennent de l'environnement Docker
 config({ path: ".env.local", override: false })
+config({ path: ".env", override: false })
 
 export default defineConfig({
   schema: path.join("prisma", "schema.prisma"),
