@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-echo "DB_DEFINED=${DATABASE_URL:+YES}"
+echo "DATABASE_URL=${DATABASE_URL}"
 echo "Running Prisma migrations..."
 npx prisma migrate deploy
 
