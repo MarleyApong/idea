@@ -42,13 +42,12 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Schema Prisma + CLI (pas les binaires, on les regenere ici)
+# Schema Prisma + binaire genere + CLI (migrations)
+# On copie uniquement .prisma (binaire pour la plateforme cible), pas @prisma/engines (multi-plateforme, volumineux)
+# @prisma/client JS est deja dans le standalone trace par Next.js
 COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
-
-# Generer le client Prisma directement dans le runner
-RUN node node_modules/prisma/build/index.js generate \
-    && chown -R nextjs:nodejs /app/node_modules/.prisma
 
 # Script de demarrage (migrations + serveur)
 COPY --from=builder /app/scripts/start.sh ./start.sh
