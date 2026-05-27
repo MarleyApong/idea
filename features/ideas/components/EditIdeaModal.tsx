@@ -90,7 +90,7 @@ export function EditIdeaModal({ idea, locale, onClose }: EditIdeaModalProps) {
             <X className="w-4 h-4" />
           </Button>
         </div>
- 
+
         <form
           ref={formRef}
           onSubmit={handleSubmit}
