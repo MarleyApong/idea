@@ -7,4 +7,3 @@ node_modules
 README.md
 *.log
 public/uploads
-prisma/migrations
