@@ -10,7 +10,20 @@
     "haveAccount": "Already have an account?",
     "signInLink": "Sign in",
     "signUpLink": "Sign up",
-    "tagline": "Capture your brilliant ideas before you forget them."
+    "tagline": "Capture your brilliant ideas before you forget them.",
+    "error": {
+      "title": "Sign-in problem",
+      "tryAgain": "Try again",
+      "backToSignIn": "Back to sign in",
+      "OAuthAccountNotLinked": "An account already exists with this email address via a different provider. Please sign in using the same provider you used when you first signed up.",
+      "AccessDenied": "Access denied. You did not authorize access to your account.",
+      "OAuthSignin": "Could not start the sign-in flow. Please try again.",
+      "OAuthCallback": "An error occurred during the provider callback. Please try again.",
+      "OAuthCreateAccount": "Could not create your account. Please try again.",
+      "Callback": "An error occurred during sign-in. Please try again.",
+      "Configuration": "The service is temporarily unavailable. Please try again later.",
+      "Default": "An unexpected error occurred. Please try again."
+    }
   },
   "nav": {
     "myIdeas": "My ideas",

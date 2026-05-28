@@ -10,7 +10,20 @@
     "haveAccount": "Vous avez deja un compte ?",
     "signInLink": "Se connecter",
     "signUpLink": "Creer un compte",
-    "tagline": "Capturez vos idees brillantes avant de les oublier."
+    "tagline": "Capturez vos idees brillantes avant de les oublier.",
+    "error": {
+      "title": "Probleme de connexion",
+      "tryAgain": "Reessayer",
+      "backToSignIn": "Retour a la connexion",
+      "OAuthAccountNotLinked": "Un compte existe deja avec cette adresse email via un autre fournisseur. Connectez-vous avec le meme fournisseur qu'a votre inscription.",
+      "AccessDenied": "Acces refuse. Vous n'avez pas autorise l'acces a votre compte.",
+      "OAuthSignin": "Impossible de demarrer la connexion. Veuillez reessayer.",
+      "OAuthCallback": "Une erreur est survenue lors du retour du fournisseur. Veuillez reessayer.",
+      "OAuthCreateAccount": "Impossible de creer votre compte. Veuillez reessayer.",
+      "Callback": "Une erreur est survenue lors de la connexion. Veuillez reessayer.",
+      "Configuration": "Le service est temporairement indisponible. Veuillez reessayer plus tard.",
+      "Default": "Une erreur inattendue est survenue. Veuillez reessayer."
+    }
   },
   "nav": {
     "myIdeas": "Mes idees",
