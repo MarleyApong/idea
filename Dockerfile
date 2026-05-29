@@ -6,7 +6,7 @@ RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm install
 
 # ── Build ─────────────────────────────────────────────────────────────────────
 FROM base AS builder
@@ -37,7 +37,7 @@ RUN mkdir -p /app/public/uploads && chown nextjs:nodejs /app/public/uploads
 
 # Installer les dependances (inclut Prisma CLI + @prisma/engines)
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm install
 
 # Generer le client Prisma dans le runner (comme fm-backend)
 COPY --from=builder /app/prisma ./prisma
