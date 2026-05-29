@@ -78,7 +78,7 @@ export async function updateIdea(
   return { success: true }
 }
 
-export async function deleteIdea(id: string, locale: string): Promise<void> {
+export async function deleteIdea(id: string, locale: string, skipRedirect = false): Promise<void> {
   const session = await auth()
   if (!session?.user?.id) return
 
@@ -87,5 +87,5 @@ export async function deleteIdea(id: string, locale: string): Promise<void> {
   })
 
   revalidatePath(`/${locale}/ideas`)
-  redirect(`/${locale}/ideas`)
+  if (!skipRedirect) redirect(`/${locale}/ideas`)
 }

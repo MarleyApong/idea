@@ -8,6 +8,7 @@ import { SessionProvider } from "next-auth/react"
 import { auth } from "@/shared/lib/auth"
 import { QueryProvider } from "@/shared/providers/QueryProvider"
 import { ThemeProvider } from "@/shared/providers/ThemeProvider"
+import { SyncProvider } from "@/shared/providers/SyncProvider"
 import { Toaster } from "@/shared/components/ui/Toaster"
 import "../globals.css"
 
@@ -59,8 +60,10 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
           <SessionProvider session={session}>
             <QueryProvider>
               <NextIntlClientProvider messages={messages}>
-                {children}
-                <Toaster />
+                <SyncProvider>
+                  {children}
+                  <Toaster />
+                </SyncProvider>
               </NextIntlClientProvider>
             </QueryProvider>
           </SessionProvider>
