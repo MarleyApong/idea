@@ -4,7 +4,7 @@ import { hashApiKey } from "@/shared/lib/api-key"
 import { apiError } from "@/shared/lib/errors"
 import { IdeaType, IdeaStatus } from "@prisma/client"
 
-async function resolveApiKey(req: NextRequest) {
+export async function resolveApiKey(req: NextRequest) {
   const auth = req.headers.get("authorization") ?? ""
   const raw = auth.startsWith("Bearer ") ? auth.slice(7).trim() : null
   if (!raw) return null
@@ -23,6 +23,46 @@ async function resolveApiKey(req: NextRequest) {
   })
 
   return apiKey.user
+}
+
+export async function GET(req: NextRequest) {
+  const user = await resolveApiKey(req)
+  if (!user) return apiError("UNAUTHORIZED", "Cle API invalide ou manquante", 401)
+
+  const { searchParams } = req.nextUrl
+  const search = searchParams.get("search") ?? ""
+  const type = searchParams.get("type") ?? ""
+  const status = searchParams.get("status") ?? ""
+  const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10))
+  const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") ?? "20", 10)))
+
+  const where = {
+    userId: user.id,
+    ...(type && Object.values(IdeaType).includes(type as IdeaType) ? { type: type as IdeaType } : {}),
+    ...(status && Object.values(IdeaStatus).includes(status as IdeaStatus) ? { status: status as IdeaStatus } : {}),
+    ...(search ? {
+      OR: [
+        { title: { contains: search, mode: "insensitive" as const } },
+        { description: { contains: search, mode: "insensitive" as const } },
+        { tags: { has: search } },
+      ],
+    } : {}),
+  }
+
+  const [ideas, total] = await Promise.all([
+    prisma.idea.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      skip: (page - 1) * limit,
+      take: limit,
+    }),
+    prisma.idea.count({ where }),
+  ])
+
+  return NextResponse.json({
+    data: ideas,
+    pagination: { page, limit, total, pages: Math.ceil(total / limit) },
+  })
 }
 
 export async function POST(req: NextRequest) {

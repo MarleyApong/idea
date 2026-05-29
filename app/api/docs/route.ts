@@ -22,8 +22,8 @@ const spec = {
     schemas: {
       IdeaType: {
         type: "string",
-        enum: ["PROJET", "INSPIRATION", "RAPPEL", "AUTRE"],
-        description: "PROJET=projet concret, INSPIRATION=idee creative, RAPPEL=a faire plus tard, AUTRE=autre",
+        enum: ["PROJET", "INSPIRATION", "RAPPEL", "NOTE", "AUTRE"],
+        description: "PROJET=projet concret, INSPIRATION=idee creative, RAPPEL=a faire plus tard, NOTE=documentation, AUTRE=autre",
       },
       IdeaStatus: {
         type: "string",
@@ -39,6 +39,31 @@ const spec = {
           tags: { type: "array", items: { type: "string" }, description: "Tags pour categoriser", example: ["mobile", "lecture", "productivite"] },
           type: { $ref: "#/components/schemas/IdeaType" },
           status: { $ref: "#/components/schemas/IdeaStatus" },
+        },
+      },
+      UpdateIdeaBody: {
+        type: "object",
+        properties: {
+          title: { type: "string", description: "Nouveau titre" },
+          description: { type: "string", nullable: true, description: "Nouvelle description" },
+          tags: { type: "array", items: { type: "string" }, description: "Nouveaux tags (remplace la liste existante)" },
+          type: { $ref: "#/components/schemas/IdeaType" },
+          status: { $ref: "#/components/schemas/IdeaStatus" },
+        },
+      },
+      IdeaList: {
+        type: "object",
+        properties: {
+          data: { type: "array", items: { $ref: "#/components/schemas/Idea" } },
+          pagination: {
+            type: "object",
+            properties: {
+              page: { type: "integer" },
+              limit: { type: "integer" },
+              total: { type: "integer" },
+              pages: { type: "integer" },
+            },
+          },
         },
       },
       Idea: {
@@ -66,6 +91,28 @@ const spec = {
   },
   paths: {
     "/ideas": {
+      get: {
+        summary: "Lister les idees",
+        description: "Retourne la liste paginee des idees de l'utilisateur, avec filtres optionnels.",
+        operationId: "listIdeas",
+        parameters: [
+          { name: "search", in: "query", schema: { type: "string" }, description: "Recherche dans le titre, la description et les tags" },
+          { name: "type", in: "query", schema: { $ref: "#/components/schemas/IdeaType" }, description: "Filtrer par type" },
+          { name: "status", in: "query", schema: { $ref: "#/components/schemas/IdeaStatus" }, description: "Filtrer par statut" },
+          { name: "page", in: "query", schema: { type: "integer", default: 1 }, description: "Numero de page" },
+          { name: "limit", in: "query", schema: { type: "integer", default: 20, maximum: 100 }, description: "Nombre de resultats par page" },
+        ],
+        responses: {
+          "200": {
+            description: "Liste des idees",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/IdeaList" } } },
+          },
+          "401": {
+            description: "Cle API invalide ou manquante",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ApiError" } } },
+          },
+        },
+      },
       post: {
         summary: "Creer une idee",
         description: "Cree une nouvelle idee associee au proprietaire de la cle API.",
@@ -88,6 +135,10 @@ const spec = {
                   summary: "Ajouter un rappel",
                   value: { title: "Regarder la conf React Summit 2025", tags: ["react", "conference"], type: "RAPPEL" },
                 },
+                note: {
+                  summary: "Ecrire une note",
+                  value: { title: "Setup Coolify avec Docker", description: "Notes de configuration pour le self-hosting", tags: ["devops", "coolify"], type: "NOTE" },
+                },
               },
             },
           },
@@ -103,6 +154,87 @@ const spec = {
           },
           "401": {
             description: "Cle API invalide ou manquante",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ApiError" } } },
+          },
+        },
+      },
+    },
+    "/ideas/{id}": {
+      parameters: [
+        { name: "id", in: "path", required: true, schema: { type: "string" }, description: "Identifiant de l'idee" },
+      ],
+      get: {
+        summary: "Obtenir une idee",
+        description: "Retourne le detail d'une idee par son ID.",
+        operationId: "getIdea",
+        responses: {
+          "200": {
+            description: "Detail de l'idee",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/Idea" } } },
+          },
+          "401": {
+            description: "Cle API invalide ou manquante",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ApiError" } } },
+          },
+          "404": {
+            description: "Idee introuvable",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ApiError" } } },
+          },
+        },
+      },
+      patch: {
+        summary: "Modifier une idee",
+        description: "Met a jour les champs fournis d'une idee existante. Les champs omis ne sont pas modifies.",
+        operationId: "updateIdea",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/UpdateIdeaBody" },
+              examples: {
+                changeStatus: {
+                  summary: "Passer en cours",
+                  value: { status: "IN_PROGRESS" },
+                },
+                updateTitle: {
+                  summary: "Renommer",
+                  value: { title: "Nouveau titre", tags: ["tag1", "tag2"] },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          "200": {
+            description: "Idee mise a jour",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/Idea" } } },
+          },
+          "400": {
+            description: "Requete invalide",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ApiError" } } },
+          },
+          "401": {
+            description: "Cle API invalide ou manquante",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ApiError" } } },
+          },
+          "404": {
+            description: "Idee introuvable",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ApiError" } } },
+          },
+        },
+      },
+      delete: {
+        summary: "Supprimer une idee",
+        description: "Supprime definitivement une idee.",
+        operationId: "deleteIdea",
+        responses: {
+          "204": { description: "Idee supprimee" },
+          "401": {
+            description: "Cle API invalide ou manquante",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ApiError" } } },
+          },
+          "404": {
+            description: "Idee introuvable",
             content: { "application/json": { schema: { $ref: "#/components/schemas/ApiError" } } },
           },
         },
