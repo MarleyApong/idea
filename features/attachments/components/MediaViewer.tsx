@@ -4,7 +4,6 @@ import { useState, useEffect, useRef, useCallback } from "react"
 import Image from "next/image"
 import { X, Download, ZoomIn, ZoomOut, RotateCcw, FileText, FileType } from "lucide-react"
 import type { Attachment } from "@prisma/client"
-import { api } from "@/shared/lib/axios"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 
@@ -116,8 +115,9 @@ function useTextContent(url: string) {
   const [content, setContent] = useState<string | null>(null)
   const [error, setError] = useState(false)
   useEffect(() => {
-    api.get<string>(url, { baseURL: "", responseType: "text" })
-      .then((r) => setContent(r.data))
+    fetch(url)
+      .then((r) => { if (!r.ok) throw new Error(); return r.text() })
+      .then((text) => setContent(text))
       .catch(() => setError(true))
   }, [url])
   return { content, error }
