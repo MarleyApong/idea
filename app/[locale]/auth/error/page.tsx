@@ -15,7 +15,7 @@ const AUTH_ERRORS = [
 type AuthErrorCode = (typeof AUTH_ERRORS)[number] | "Default"
 
 function getErrorKey(error: string | undefined): AuthErrorCode {
-  if (AUTH_ERRORS.includes(error as AuthErrorCode)) return error as AuthErrorCode
+  if (AUTH_ERRORS.includes(error as (typeof AUTH_ERRORS)[number])) return error as AuthErrorCode
   return "Default"
 }
 
