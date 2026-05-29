@@ -86,9 +86,13 @@ export function IdeasPageClient({ locale, initialData }: IdeasPageClientProps) {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="columns-1 sm:columns-2 lg:columns-3 gap-4">
           {filtered.map((idea) => (
-            <div key={idea.id} onClick={() => router.push(`/${locale}/ideas/${idea.id}`)} className="cursor-pointer">
+            <div
+              key={idea.id}
+              onClick={() => router.push(`/${locale}/ideas/${idea.id}`)}
+              className="break-inside-avoid mb-4 cursor-pointer"
+            >
               <IdeaCard idea={idea} />
             </div>
           ))}
