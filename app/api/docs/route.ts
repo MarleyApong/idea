@@ -80,6 +80,19 @@ const spec = {
           updatedAt: { type: "string", format: "date-time" },
         },
       },
+      Attachment: {
+        type: "object",
+        properties: {
+          id: { type: "string" },
+          title: { type: "string", nullable: true },
+          filename: { type: "string" },
+          url: { type: "string" },
+          mimeType: { type: "string" },
+          size: { type: "integer", description: "Taille en octets" },
+          ideaId: { type: "string" },
+          createdAt: { type: "string", format: "date-time" },
+        },
+      },
       ApiError: {
         type: "object",
         properties: {
@@ -229,6 +242,54 @@ const spec = {
         operationId: "deleteIdea",
         responses: {
           "204": { description: "Idee supprimee" },
+          "401": {
+            description: "Cle API invalide ou manquante",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ApiError" } } },
+          },
+          "404": {
+            description: "Idee introuvable",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ApiError" } } },
+          },
+        },
+      },
+    },
+  },
+    "/upload": {
+      post: {
+        summary: "Attacher un fichier a une idee",
+        description: "Upload un fichier (image, PDF, markdown, texte) et l'attache a une idee existante. Corps en `multipart/form-data`.",
+        operationId: "uploadAttachment",
+        requestBody: {
+          required: true,
+          content: {
+            "multipart/form-data": {
+              schema: {
+                type: "object",
+                required: ["file", "ideaId"],
+                properties: {
+                  file: { type: "string", format: "binary", description: "Fichier a uploader (max 10MB)" },
+                  ideaId: { type: "string", description: "ID de l'idee a laquelle attacher le fichier" },
+                  title: { type: "string", description: "Titre optionnel pour le fichier" },
+                },
+              },
+              examples: {
+                markdown: {
+                  summary: "Attacher un fichier .md",
+                  value: { ideaId: "cmpr2h372000301qp9c7z2sto", title: "Documentation technique" },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          "201": {
+            description: "Fichier attache avec succes",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/Attachment" } } },
+          },
+          "400": {
+            description: "Requete invalide (fichier manquant, type non accepte, trop grand)",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/ApiError" } } },
+          },
           "401": {
             description: "Cle API invalide ou manquante",
             content: { "application/json": { schema: { $ref: "#/components/schemas/ApiError" } } },
