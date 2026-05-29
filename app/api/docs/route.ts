@@ -253,7 +253,6 @@ const spec = {
         },
       },
     },
-  },
     "/upload": {
       post: {
         summary: "Attacher un fichier a une idee",
