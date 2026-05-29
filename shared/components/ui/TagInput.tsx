@@ -31,10 +31,11 @@ export function TagInput({ name, defaultValue = "", placeholder, label, color = 
   })
 
   const suggestions = savedTags.filter(
-    (t) =>
-      !tags.includes(t) &&
-      (input.length === 0 || t.toLowerCase().includes(input.toLowerCase()))
+    (t) => !tags.includes(t) && t.toLowerCase().includes(input.toLowerCase())
   )
+
+  // Clamp pour éviter un index hors-bounds quand les suggestions rétrécissent
+  const activeIndex = Math.min(highlighted, Math.max(suggestions.length - 1, 0))
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -47,11 +48,12 @@ export function TagInput({ name, defaultValue = "", placeholder, label, color = 
   }, [])
 
   function addTag(value: string) {
-    const trimmed = value.trim()
+    const trimmed = value?.trim()
     if (trimmed && !tags.includes(trimmed)) {
       setTags((prev) => [...prev, trimmed])
     }
     setInput("")
+    setHighlighted(0)
     setOpen(false)
   }
 
@@ -62,13 +64,14 @@ export function TagInput({ name, defaultValue = "", placeholder, label, color = 
   function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === "ArrowDown") {
       e.preventDefault()
+      setOpen(true)
       setHighlighted((h) => Math.min(h + 1, suggestions.length - 1))
     } else if (e.key === "ArrowUp") {
       e.preventDefault()
       setHighlighted((h) => Math.max(h - 1, 0))
     } else if ((e.key === "Enter" || e.key === ",") && open && suggestions.length > 0) {
       e.preventDefault()
-      addTag(suggestions[highlighted])
+      addTag(suggestions[activeIndex])
     } else if (e.key === "Enter" || e.key === ",") {
       e.preventDefault()
       if (input.trim()) addTag(input)
@@ -104,15 +107,18 @@ export function TagInput({ name, defaultValue = "", placeholder, label, color = 
             ref={inputRef}
             type="text"
             value={input}
-            onChange={(e) => { setInput(e.target.value); setHighlighted(0) }}
+            onChange={(e) => {
+              setInput(e.target.value)
+              setHighlighted(0)
+              setOpen(true)
+            }}
             onKeyDown={handleKeyDown}
-            onFocus={() => suggestions.length > 0 && setOpen(true)}
+            onFocus={() => setOpen(true)}
             placeholder={tags.length === 0 ? placeholder : ""}
             className="flex-1 min-w-20 text-sm text-(--fg) placeholder:text-(--fg-muted) outline-none bg-transparent py-0.5"
           />
         </div>
 
-        {/* Dropdown suggestions */}
         {open && suggestions.length > 0 && (
           <div className="absolute top-full left-0 right-0 mt-1 bg-(--bg-card) border border-(--border) rounded-xl shadow-lg z-20 overflow-hidden">
             {suggestions.map((tag, i) => (
@@ -122,7 +128,7 @@ export function TagInput({ name, defaultValue = "", placeholder, label, color = 
                 onMouseDown={(e) => { e.preventDefault(); addTag(tag) }}
                 onMouseEnter={() => setHighlighted(i)}
                 className={`w-full text-left px-4 py-2 text-sm transition-colors ${
-                  i === highlighted ? `${color} bg-(--bg) font-medium` : "text-slate-700"
+                  i === activeIndex ? `${color} bg-(--bg) font-medium` : "text-slate-700"
                 }`}
               >
                 {tag}
