@@ -19,8 +19,18 @@ const poppins = Poppins({
 })
 
 export const metadata: Metadata = {
-  title: "idea. - Ne perdez jamais une bonne idee",
-  description: "Capturez, organisez et construisez vos idees innovantes.",
+  title: "idea. - Ne perdez jamais une bonne idée",
+  description: "Capturez, organisez et construisez vos idées innovantes.",
+  manifest: "/manifest.webmanifest",
+  themeColor: "#2274a5",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "idea.",
+  },
+  other: {
+    "mobile-web-app-capable": "yes",
+  },
 }
 
 export function generateStaticParams() {
