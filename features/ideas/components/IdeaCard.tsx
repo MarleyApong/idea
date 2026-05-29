@@ -24,6 +24,7 @@ export function IdeaCard({ idea }: { idea: Idea }) {
     PROJET:      t("typeProjet"),
     INSPIRATION: t("typeInspiration"),
     RAPPEL:      t("typeRappel"),
+    NOTE:        t("typeNote"),
     AUTRE:       t("typeAutre"),
   }
 

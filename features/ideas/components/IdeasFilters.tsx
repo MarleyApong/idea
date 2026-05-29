@@ -15,7 +15,7 @@ interface IdeasFiltersProps {
   onStatusFilter: (v: IdeaStatus | "ALL") => void
 }
 
-const types: IdeaType[] = ["PROJET", "INSPIRATION", "RAPPEL", "AUTRE"]
+const types: IdeaType[] = ["PROJET", "INSPIRATION", "RAPPEL", "NOTE", "AUTRE"]
 const statuses: IdeaStatus[] = ["DRAFT", "IN_PROGRESS", "DONE", "ARCHIVED"]
 
 const statusColors: Record<IdeaStatus, string> = {
@@ -55,6 +55,7 @@ export function IdeasFilters({
     PROJET:      t("typeProjet"),
     INSPIRATION: t("typeInspiration"),
     RAPPEL:      t("typeRappel"),
+    NOTE:        t("typeNote"),
     AUTRE:       t("typeAutre"),
   }
 

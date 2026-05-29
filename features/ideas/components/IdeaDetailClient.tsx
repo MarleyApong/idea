@@ -89,6 +89,7 @@ export function IdeaDetailClient({ idea, attachments, locale }: { idea: Idea; at
     PROJET:      t("typeProjet"),
     INSPIRATION: t("typeInspiration"),
     RAPPEL:      t("typeRappel"),
+    NOTE:        t("typeNote"),
     AUTRE:       t("typeAutre"),
   }
 

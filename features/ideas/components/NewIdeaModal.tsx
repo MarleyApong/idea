@@ -16,7 +16,7 @@ interface NewIdeaModalProps {
   onClose: () => void
 }
 
-const types: IdeaType[] = ["PROJET", "INSPIRATION", "RAPPEL", "AUTRE"]
+const types: IdeaType[] = ["PROJET", "INSPIRATION", "RAPPEL", "NOTE", "AUTRE"]
 
 export function NewIdeaModal({ locale, onClose }: NewIdeaModalProps) {
   const t = useTranslations("ideas")
@@ -40,6 +40,7 @@ export function NewIdeaModal({ locale, onClose }: NewIdeaModalProps) {
     PROJET:      t("typeProjet"),
     INSPIRATION: t("typeInspiration"),
     RAPPEL:      t("typeRappel"),
+    NOTE:        t("typeNote"),
     AUTRE:       t("typeAutre"),
   }
 
@@ -60,7 +61,7 @@ export function NewIdeaModal({ locale, onClose }: NewIdeaModalProps) {
           {/* Type selector */}
           <div>
             <p className="text-sm font-medium text-(--fg) mb-2">{t("type")}</p>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-5 gap-2">
               {types.map((type) => {
                 const cfg = ideaTypeConfig[type]
                 const active = selectedType === type

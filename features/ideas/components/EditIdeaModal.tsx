@@ -11,7 +11,7 @@ import { Input } from "@/shared/components/ui/Input";
 import { Textarea } from "@/shared/components/ui/Textarea";
 import { TagInput } from "@/shared/components/ui/TagInput";
 
-const types: IdeaType[] = ["PROJET", "INSPIRATION", "RAPPEL", "AUTRE"];
+const types: IdeaType[] = ["PROJET", "INSPIRATION", "RAPPEL", "NOTE", "AUTRE"];
 const statuses: IdeaStatus[] = ["DRAFT", "IN_PROGRESS", "DONE", "ARCHIVED"];
 
 const statusConfig: Record<IdeaStatus, { idle: string; active: string }> = {
@@ -51,10 +51,11 @@ export function EditIdeaModal({ idea, locale, onClose }: EditIdeaModalProps) {
   );
 
   const typeLabels: Record<IdeaType, string> = {
-    PROJET: t("typeProjet"),
+    PROJET:      t("typeProjet"),
     INSPIRATION: t("typeInspiration"),
-    RAPPEL: t("typeRappel"),
-    AUTRE: t("typeAutre"),
+    RAPPEL:      t("typeRappel"),
+    NOTE:        t("typeNote"),
+    AUTRE:       t("typeAutre"),
   };
 
   const statusLabels: Record<IdeaStatus, string> = {
@@ -99,7 +100,7 @@ export function EditIdeaModal({ idea, locale, onClose }: EditIdeaModalProps) {
           {/* Type */}
           <div>
             <p className="text-sm font-medium text-(--fg) mb-2">{t("type")}</p>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-5 gap-2">
               {types.map((type) => {
                 const cfg = ideaTypeConfig[type];
                 const active = selectedType === type;

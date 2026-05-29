@@ -98,6 +98,7 @@ enum IdeaType {
   PROJET
   INSPIRATION
   RAPPEL
+  NOTE
   AUTRE
 }
 
