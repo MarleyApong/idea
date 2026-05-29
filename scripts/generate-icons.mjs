@@ -1,3 +1,4 @@
+// Pour regénérer les icônes : npm install -D @resvg/resvg-js && node scripts/generate-icons.mjs
 import { Resvg } from "@resvg/resvg-js";
 import { readFileSync, writeFileSync } from "fs";
 import { join, dirname } from "path";
