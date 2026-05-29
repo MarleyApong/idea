@@ -84,9 +84,12 @@
     "upload": "Televerser",
     "uploading": "En cours...",
     "cancel": "Annuler",
+    "delete": "Supprimer",
     "empty": "Aucune piece jointe.",
     "titleField": "Titre",
-    "titlePlaceholder": "Ex: Maquette, Contrat, Notes..."
+    "titlePlaceholder": "Ex: Maquette, Contrat, Notes...",
+    "confirmDeleteTitle": "Supprimer ce fichier ?",
+    "confirmDeleteDesc": "Cette action est irreversible."
   },
   "tags": {
     "title": "Mes tags",

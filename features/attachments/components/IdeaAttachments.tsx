@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import type { Attachment } from "@prisma/client"
-import { Paperclip, Trash2, FileText, FileType, Download, Plus, X, Eye } from "lucide-react"
+import { Paperclip, Trash2, FileText, FileType, Download, Plus, X, Eye, AlertTriangle } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useAttachments, useUploadAttachment, useDeleteAttachment } from "@/features/attachments/hooks/useAttachments"
 import { FileUpload } from "@/shared/components/ui/FileUpload"
@@ -102,6 +102,7 @@ export function IdeaAttachments({ ideaId, initialAttachments }: { ideaId: string
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [title, setTitle] = useState("")
   const [viewing, setViewing] = useState<Attachment | null>(null)
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
 
   const { data: attachments = initialAttachments } = useAttachments(ideaId, initialAttachments)
   const { mutate: upload, isPending: uploading } = useUploadAttachment(ideaId)
@@ -185,8 +186,8 @@ export function IdeaAttachments({ ideaId, initialAttachments }: { ideaId: string
                 key={att.id}
                 att={att}
                 onView={() => setViewing(att)}
-                onDelete={() => remove(att.id)}
-                deleting={removing}
+                onDelete={() => setConfirmDeleteId(att.id)}
+                deleting={removing && confirmDeleteId === att.id}
               />
             ))}
           </div>
@@ -194,6 +195,38 @@ export function IdeaAttachments({ ideaId, initialAttachments }: { ideaId: string
       </div>
 
       <MediaViewer attachment={viewing} onClose={() => setViewing(null)} />
+
+      {confirmDeleteId && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-(--bg-card) rounded-2xl w-full max-w-sm shadow-xl p-6 space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-5 h-5 text-red-500" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-(--fg)">{t("confirmDeleteTitle")}</h3>
+                <p className="text-sm text-(--fg-muted) mt-0.5">{t("confirmDeleteDesc")}</p>
+              </div>
+            </div>
+            <div className="flex gap-3 pt-1">
+              <Button variant="secondary" className="flex-1" onClick={() => setConfirmDeleteId(null)} disabled={removing}>
+                {t("cancel")}
+              </Button>
+              <Button
+                variant="danger"
+                className="flex-1"
+                disabled={removing}
+                onClick={() => {
+                  remove(confirmDeleteId, { onSettled: () => setConfirmDeleteId(null) })
+                }}
+              >
+                <Trash2 className="w-4 h-4" />
+                {removing ? "..." : t("delete")}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }

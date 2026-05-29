@@ -84,9 +84,12 @@
     "upload": "Upload",
     "uploading": "Uploading...",
     "cancel": "Cancel",
+    "delete": "Delete",
     "empty": "No attachments.",
     "titleField": "Title",
-    "titlePlaceholder": "E.g. Mockup, Contract, Notes..."
+    "titlePlaceholder": "E.g. Mockup, Contract, Notes...",
+    "confirmDeleteTitle": "Delete this file?",
+    "confirmDeleteDesc": "This action cannot be undone."
   },
   "tags": {
     "title": "My tags",
