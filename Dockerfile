@@ -21,6 +21,13 @@ RUN npx prisma generate
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
+# ── Production deps (prod only, cached separement) ───────────────────────────
+FROM base AS prodDeps
+RUN apk add --no-cache libc6-compat openssl
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm install --omit=dev
+
 # ── Production ────────────────────────────────────────────────────────────────
 FROM base AS runner
 RUN apk add --no-cache openssl
@@ -29,17 +36,15 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs && \
+    mkdir -p /app/public/uploads && \
+    chown nextjs:nodejs /app/public/uploads
 
-# Dossier uploads persistant (monte via volume dans Coolify)
-RUN mkdir -p /app/public/uploads && chown nextjs:nodejs /app/public/uploads
+# Reutiliser les deps de prod sans relancer npm install
+COPY --from=prodDeps /app/node_modules ./node_modules
 
-# Installer les dependances (inclut Prisma CLI + @prisma/engines)
-COPY package.json package-lock.json ./
-RUN npm install
-
-# Generer le client Prisma dans le runner (comme fm-backend)
+# Generer le client Prisma
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 RUN npx prisma generate
