@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from "next/server"
 import { apiError } from "@/shared/lib/errors"
 import { IdeaType, IdeaStatus } from "@prisma/client"
 import { resolveApiKey } from "../route"
+import { unlink } from "fs/promises"
+import { join } from "path"
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const user = await resolveApiKey(req)
@@ -57,7 +59,13 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   if (!existing || existing.userId !== user.id)
     return apiError("NOT_FOUND", "Idee introuvable", 404)
 
+  const attachments = await prisma.attachment.findMany({ where: { ideaId: id } })
+
   await prisma.idea.delete({ where: { id } })
+
+  for (const att of attachments) {
+    try { await unlink(join(process.cwd(), "public", att.url)) } catch {}
+  }
 
   return new NextResponse(null, { status: 204 })
 }

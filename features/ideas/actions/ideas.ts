@@ -5,6 +5,8 @@ import { prisma } from "@/shared/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { IdeaType, IdeaStatus } from "@prisma/client"
 import { redirect } from "next/navigation"
+import { unlink } from "fs/promises"
+import { join } from "path"
 
 export type IdeaFormState = {
   success?: boolean
@@ -82,9 +84,15 @@ export async function deleteIdea(id: string, locale: string, skipRedirect = fals
   const session = await auth()
   if (!session?.user?.id) return
 
+  const attachments = await prisma.attachment.findMany({ where: { ideaId: id } })
+
   await prisma.idea.deleteMany({
     where: { id, userId: session.user.id },
   })
+
+  for (const att of attachments) {
+    try { await unlink(join(process.cwd(), "public", att.url)) } catch {}
+  }
 
   revalidatePath(`/${locale}/ideas`)
   if (!skipRedirect) redirect(`/${locale}/ideas`)
