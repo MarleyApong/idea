@@ -5,10 +5,19 @@ import { IdeaType, IdeaStatus } from "@prisma/client"
 import { resolveApiKey } from "../route"
 import { unlink } from "fs/promises"
 import { join } from "path"
+import { rateLimit, getIp, LIMITS } from "@/shared/lib/rate-limit"
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const cfg = LIMITS["GET /ideas"]
+  const ip = getIp(req)
+  if (!rateLimit(`ip:GET/ideas:${ip}`, cfg.ip, cfg.windowMs).ok)
+    return apiError("RATE_LIMITED", "Trop de requetes, reessaie dans quelques secondes", 429)
+
   const user = await resolveApiKey(req)
   if (!user) return apiError("UNAUTHORIZED", "Cle API invalide ou manquante", 401)
+
+  if (!rateLimit(`key:GET/ideas:${user.id}`, cfg.key, cfg.windowMs).ok)
+    return apiError("RATE_LIMITED", "Limite de requetes atteinte pour cette cle API", 429)
 
   const { id } = await params
   const idea = await prisma.idea.findUnique({ where: { id } })
@@ -20,8 +29,16 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const cfg = LIMITS["PATCH /ideas"]
+  const ip = getIp(req)
+  if (!rateLimit(`ip:PATCH/ideas:${ip}`, cfg.ip, cfg.windowMs).ok)
+    return apiError("RATE_LIMITED", "Trop de requetes, reessaie dans quelques secondes", 429)
+
   const user = await resolveApiKey(req)
   if (!user) return apiError("UNAUTHORIZED", "Cle API invalide ou manquante", 401)
+
+  if (!rateLimit(`key:PATCH/ideas:${user.id}`, cfg.key, cfg.windowMs).ok)
+    return apiError("RATE_LIMITED", "Limite de requetes atteinte pour cette cle API", 429)
 
   const { id } = await params
   const existing = await prisma.idea.findUnique({ where: { id } })
@@ -51,8 +68,16 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 }
 
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const cfg = LIMITS["DELETE /ideas"]
+  const ip = getIp(req)
+  if (!rateLimit(`ip:DELETE/ideas:${ip}`, cfg.ip, cfg.windowMs).ok)
+    return apiError("RATE_LIMITED", "Trop de requetes, reessaie dans quelques secondes", 429)
+
   const user = await resolveApiKey(req)
   if (!user) return apiError("UNAUTHORIZED", "Cle API invalide ou manquante", 401)
+
+  if (!rateLimit(`key:DELETE/ideas:${user.id}`, cfg.key, cfg.windowMs).ok)
+    return apiError("RATE_LIMITED", "Limite de requetes atteinte pour cette cle API", 429)
 
   const { id } = await params
   const existing = await prisma.idea.findUnique({ where: { id } })

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { hashApiKey } from "@/shared/lib/api-key"
 import { apiError } from "@/shared/lib/errors"
 import { IdeaType, IdeaStatus } from "@prisma/client"
+import { rateLimit, getIp, LIMITS } from "@/shared/lib/rate-limit"
 
 export async function resolveApiKey(req: NextRequest) {
   const auth = req.headers.get("authorization") ?? ""
@@ -25,9 +26,24 @@ export async function resolveApiKey(req: NextRequest) {
   return apiKey.user
 }
 
+function rateLimitHeaders(remaining: number, resetAt: number) {
+  return {
+    "X-RateLimit-Remaining": String(remaining),
+    "X-RateLimit-Reset": String(Math.ceil(resetAt / 1000)),
+  }
+}
+
 export async function GET(req: NextRequest) {
+  const cfg = LIMITS["GET /ideas"]
+  const ip = getIp(req)
+  const ipCheck = rateLimit(`ip:GET/ideas:${ip}`, cfg.ip, cfg.windowMs)
+  if (!ipCheck.ok) return apiError("RATE_LIMITED", "Trop de requetes, reessaie dans quelques secondes", 429)
+
   const user = await resolveApiKey(req)
   if (!user) return apiError("UNAUTHORIZED", "Cle API invalide ou manquante", 401)
+
+  const keyCheck = rateLimit(`key:GET/ideas:${user.id}`, cfg.key, cfg.windowMs)
+  if (!keyCheck.ok) return apiError("RATE_LIMITED", "Limite de requetes atteinte pour cette cle API", 429)
 
   const { searchParams } = req.nextUrl
   const search = searchParams.get("search") ?? ""
@@ -59,15 +75,23 @@ export async function GET(req: NextRequest) {
     prisma.idea.count({ where }),
   ])
 
-  return NextResponse.json({
-    data: ideas,
-    pagination: { page, limit, total, pages: Math.ceil(total / limit) },
-  })
+  return NextResponse.json(
+    { data: ideas, pagination: { page, limit, total, pages: Math.ceil(total / limit) } },
+    { headers: rateLimitHeaders(keyCheck.remaining, keyCheck.resetAt) }
+  )
 }
 
 export async function POST(req: NextRequest) {
+  const cfg = LIMITS["POST /ideas"]
+  const ip = getIp(req)
+  const ipCheck = rateLimit(`ip:POST/ideas:${ip}`, cfg.ip, cfg.windowMs)
+  if (!ipCheck.ok) return apiError("RATE_LIMITED", "Trop de requetes, reessaie dans quelques secondes", 429)
+
   const user = await resolveApiKey(req)
   if (!user) return apiError("UNAUTHORIZED", "Cle API invalide ou manquante", 401)
+
+  const keyCheck = rateLimit(`key:POST/ideas:${user.id}`, cfg.key, cfg.windowMs)
+  if (!keyCheck.ok) return apiError("RATE_LIMITED", "Limite de requetes atteinte pour cette cle API", 429)
 
   const body = await req.json().catch(() => null)
   if (!body) return apiError("INVALID_BODY", "Corps JSON invalide")
@@ -87,5 +111,8 @@ export async function POST(req: NextRequest) {
     },
   })
 
-  return NextResponse.json(idea, { status: 201 })
+  return NextResponse.json(idea, {
+    status: 201,
+    headers: rateLimitHeaders(keyCheck.remaining, keyCheck.resetAt),
+  })
 }

@@ -4,6 +4,7 @@ import { writeFile, mkdir } from "fs/promises"
 import { join } from "path"
 import { apiError } from "@/shared/lib/errors"
 import { resolveApiKey } from "../ideas/route"
+import { rateLimit, getIp, LIMITS } from "@/shared/lib/rate-limit"
 
 const ACCEPTED_TYPES: Record<string, { ext: string[]; magic: number[][] }> = {
   "image/jpeg":       { ext: [".jpg", ".jpeg"], magic: [[0xFF, 0xD8, 0xFF]] },
@@ -23,8 +24,16 @@ function checkMagicBytes(buffer: Buffer, patterns: number[][]): boolean {
 }
 
 export async function POST(req: NextRequest) {
+  const cfg = LIMITS["POST /upload"]
+  const ip = getIp(req)
+  if (!rateLimit(`ip:POST/upload:${ip}`, cfg.ip, cfg.windowMs).ok)
+    return apiError("RATE_LIMITED", "Trop de requetes, reessaie dans quelques secondes", 429)
+
   const user = await resolveApiKey(req)
   if (!user) return apiError("UNAUTHORIZED", "Cle API invalide ou manquante", 401)
+
+  if (!rateLimit(`key:POST/upload:${user.id}`, cfg.key, cfg.windowMs).ok)
+    return apiError("RATE_LIMITED", "Limite d'upload atteinte pour cette cle API (10/min)", 429)
 
   let formData: FormData
   try {
