@@ -5,12 +5,15 @@ import Image from "next/image"
 import { X, Download, ZoomIn, ZoomOut, RotateCcw, FileText, FileType } from "lucide-react"
 import type { Attachment } from "@prisma/client"
 import { api } from "@/shared/lib/axios"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
 
-type DocType = "IMAGE" | "PDF" | "TEXT" | "OTHER"
+type DocType = "IMAGE" | "PDF" | "MARKDOWN" | "TEXT" | "OTHER"
 
-function inferDocType(mimeType: string): DocType {
+function inferDocType(mimeType: string, filename: string): DocType {
   if (mimeType.startsWith("image/")) return "IMAGE"
   if (mimeType === "application/pdf") return "PDF"
+  if (mimeType === "text/markdown" || mimeType === "text/x-markdown" || filename.endsWith(".md")) return "MARKDOWN"
   if (mimeType.startsWith("text/")) return "TEXT"
   return "OTHER"
 }
@@ -109,16 +112,65 @@ function PdfViewer({ url }: { url: string }) {
   )
 }
 
-/* ---- Text viewer (axios) ---- */
-function TextViewer({ url }: { url: string }) {
+function useTextContent(url: string) {
   const [content, setContent] = useState<string | null>(null)
   const [error, setError] = useState(false)
-
   useEffect(() => {
     api.get<string>(url, { baseURL: "", responseType: "text" })
       .then((r) => setContent(r.data))
       .catch(() => setError(true))
   }, [url])
+  return { content, error }
+}
+
+/* ---- Markdown viewer ---- */
+function MarkdownViewer({ url }: { url: string }) {
+  const { content, error } = useTextContent(url)
+
+  if (error) return <div className="flex-1 flex items-center justify-center text-(--fg-muted)">Impossible de charger le fichier</div>
+  if (!content) return <div className="flex-1 flex items-center justify-center text-(--fg-muted)">Chargement...</div>
+
+  return (
+    <div className="flex-1 overflow-auto p-8 bg-(--bg)">
+      <div className="max-w-2xl mx-auto text-(--fg)">
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          components={{
+            h1: ({ children }) => <h1 className="text-2xl font-bold mb-4 mt-6 pb-2 border-b border-(--border)">{children}</h1>,
+            h2: ({ children }) => <h2 className="text-xl font-semibold mb-3 mt-5">{children}</h2>,
+            h3: ({ children }) => <h3 className="text-lg font-semibold mb-2 mt-4">{children}</h3>,
+            h4: ({ children }) => <h4 className="text-base font-semibold mb-2 mt-3">{children}</h4>,
+            p: ({ children }) => <p className="mb-3 leading-relaxed text-sm">{children}</p>,
+            ul: ({ children }) => <ul className="mb-3 pl-5 space-y-1 list-disc text-sm">{children}</ul>,
+            ol: ({ children }) => <ol className="mb-3 pl-5 space-y-1 list-decimal text-sm">{children}</ol>,
+            li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+            blockquote: ({ children }) => <blockquote className="border-l-4 border-primary/40 pl-4 my-3 text-(--fg-muted) italic text-sm">{children}</blockquote>,
+            code: ({ children, className }) => {
+              const isBlock = className?.startsWith("language-")
+              return isBlock
+                ? <code className="block bg-slate-900 text-slate-200 rounded-lg p-4 text-xs font-mono overflow-auto mb-3 whitespace-pre">{children}</code>
+                : <code className="bg-(--border) text-primary rounded px-1.5 py-0.5 text-xs font-mono">{children}</code>
+            },
+            pre: ({ children }) => <>{children}</>,
+            a: ({ href, children }) => <a href={href} target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2 hover:opacity-80">{children}</a>,
+            strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+            em: ({ children }) => <em className="italic">{children}</em>,
+            hr: () => <hr className="my-5 border-(--border)" />,
+            table: ({ children }) => <div className="overflow-auto mb-3"><table className="w-full text-sm border-collapse">{children}</table></div>,
+            th: ({ children }) => <th className="text-left px-3 py-2 bg-(--bg-card) border border-(--border) font-semibold">{children}</th>,
+            td: ({ children }) => <td className="px-3 py-2 border border-(--border)">{children}</td>,
+          }}
+        >
+          {content}
+        </ReactMarkdown>
+      </div>
+    </div>
+  )
+}
+
+/* ---- Text viewer (axios) ---- */
+function TextViewer({ url }: { url: string }) {
+  const { content, error } = useTextContent(url)
 
   if (error) return <div className="flex-1 flex items-center justify-center text-(--fg-muted)">Impossible de charger le fichier</div>
   if (!content) return <div className="flex-1 flex items-center justify-center text-(--fg-muted)">Chargement...</div>
@@ -171,7 +223,7 @@ export function MediaViewer({ attachment, onClose }: MediaViewerProps) {
 
   if (!attachment) return null
 
-  const docType = inferDocType(attachment.mimeType)
+  const docType = inferDocType(attachment.mimeType, attachment.filename)
   const displayTitle = attachment.title || attachment.filename
 
   return (
@@ -180,10 +232,11 @@ export function MediaViewer({ attachment, onClose }: MediaViewerProps) {
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div className={`flex flex-col bg-(--bg-card) rounded-2xl overflow-hidden shadow-2xl w-full ${
-        docType === "IMAGE" ? "max-w-5xl h-[90vh]"  :
-        docType === "PDF"   ? "max-w-4xl h-[90vh]"  :
-        docType === "TEXT"  ? "max-w-3xl h-[80vh]"  :
-                              "max-w-sm"
+        docType === "IMAGE"    ? "max-w-5xl h-[90vh]"  :
+        docType === "PDF"      ? "max-w-4xl h-[90vh]"  :
+        docType === "MARKDOWN" ? "max-w-3xl h-[85vh]"  :
+        docType === "TEXT"     ? "max-w-3xl h-[80vh]"  :
+                                 "max-w-sm"
       }`}>
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-(--border) shrink-0">
@@ -210,10 +263,11 @@ export function MediaViewer({ attachment, onClose }: MediaViewerProps) {
           </div>
         </div>
 
-        {docType === "IMAGE" && <ImageViewer url={attachment.url} title={displayTitle} />}
-        {docType === "PDF"   && <PdfViewer url={attachment.url} />}
-        {docType === "TEXT"  && <TextViewer url={attachment.url} />}
-        {docType === "OTHER" && <DownloadCard attachment={attachment} />}
+        {docType === "IMAGE"    && <ImageViewer url={attachment.url} title={displayTitle} />}
+        {docType === "PDF"      && <PdfViewer url={attachment.url} />}
+        {docType === "MARKDOWN" && <MarkdownViewer url={attachment.url} />}
+        {docType === "TEXT"     && <TextViewer url={attachment.url} />}
+        {docType === "OTHER"    && <DownloadCard attachment={attachment} />}
       </div>
     </div>
   )
