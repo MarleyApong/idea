@@ -199,9 +199,21 @@ export async function GET() {
   )
 }
 
+async function resolveUser(req: NextRequest) {
+  // Accept key via URL query param (?key=...) or Authorization header
+  const keyFromQuery = req.nextUrl.searchParams.get("key")
+  if (keyFromQuery) {
+    const fakeReq = new Request(req.url, {
+      headers: { authorization: `Bearer ${keyFromQuery}` },
+    })
+    return resolveApiKey(fakeReq as NextRequest)
+  }
+  return resolveApiKey(req)
+}
+
 export async function POST(req: NextRequest) {
-  const user = await resolveApiKey(req)
-  if (!user) return rpcError(null, -32001, "Unauthorized — Bearer token requis")
+  const user = await resolveUser(req)
+  if (!user) return rpcError(null, -32001, "Unauthorized — clé API requise (?key=... ou Bearer)")
 
   let body: { jsonrpc: string; id?: unknown; method: string; params?: Record<string, unknown> }
   try {
