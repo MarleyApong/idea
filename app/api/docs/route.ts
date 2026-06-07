@@ -39,6 +39,7 @@ const spec = {
           tags: { type: "array", items: { type: "string" }, description: "Tags pour categoriser", example: ["mobile", "lecture", "productivite"] },
           type: { $ref: "#/components/schemas/IdeaType" },
           status: { $ref: "#/components/schemas/IdeaStatus" },
+          parentId: { type: "string", nullable: true, description: "ID de l'idee parente, pour organiser cette idee sous un projet ou une note existante", example: "cmq2md1fv000201o9ab1gvg5a" },
         },
       },
       UpdateIdeaBody: {
@@ -49,6 +50,7 @@ const spec = {
           tags: { type: "array", items: { type: "string" }, description: "Nouveaux tags (remplace la liste existante)" },
           type: { $ref: "#/components/schemas/IdeaType" },
           status: { $ref: "#/components/schemas/IdeaStatus" },
+          parentId: { type: "string", nullable: true, description: "ID de l'idee parente. Envoyer null pour detacher l'idee de son parent" },
         },
       },
       IdeaList: {
@@ -75,9 +77,27 @@ const spec = {
           tags: { type: "array", items: { type: "string" } },
           type: { $ref: "#/components/schemas/IdeaType" },
           status: { $ref: "#/components/schemas/IdeaStatus" },
+          parentId: { type: "string", nullable: true, description: "ID de l'idee parente, ou null si l'idee est a la racine" },
           userId: { type: "string" },
           createdAt: { type: "string", format: "date-time" },
           updatedAt: { type: "string", format: "date-time" },
+          attachments: { type: "array", items: { $ref: "#/components/schemas/Attachment" }, description: "Fichiers joints a cette idee" },
+          children: {
+            type: "array",
+            description: "Sous-idees rattachees (uniquement present sur GET /ideas/{id})",
+            items: { $ref: "#/components/schemas/IdeaChildSummary" },
+          },
+        },
+      },
+      IdeaChildSummary: {
+        type: "object",
+        description: "Apercu d'une sous-idee, retourne dans le champ children d'une idee parente",
+        properties: {
+          id: { type: "string" },
+          title: { type: "string" },
+          type: { $ref: "#/components/schemas/IdeaType" },
+          status: { $ref: "#/components/schemas/IdeaStatus" },
+          createdAt: { type: "string", format: "date-time" },
         },
       },
       Attachment: {
@@ -106,12 +126,13 @@ const spec = {
     "/ideas": {
       get: {
         summary: "Lister les idees",
-        description: "Retourne la liste paginee des idees de l'utilisateur, avec filtres optionnels.",
+        description: "Retourne la liste paginee des idees de l'utilisateur (avec leurs fichiers joints), avec filtres optionnels.",
         operationId: "listIdeas",
         parameters: [
-          { name: "search", in: "query", schema: { type: "string" }, description: "Recherche dans le titre, la description et les tags" },
+          { name: "search", in: "query", schema: { type: "string" }, description: "Recherche insensible a la casse dans le titre, la description, et les tags (correspondance partielle, ex: 'music' trouve 'musicgen')" },
           { name: "type", in: "query", schema: { $ref: "#/components/schemas/IdeaType" }, description: "Filtrer par type" },
           { name: "status", in: "query", schema: { $ref: "#/components/schemas/IdeaStatus" }, description: "Filtrer par statut" },
+          { name: "parentId", in: "query", schema: { type: "string" }, description: "Filtrer pour ne lister que les sous-idees d'une idee donnee" },
           { name: "page", in: "query", schema: { type: "integer", default: 1 }, description: "Numero de page" },
           { name: "limit", in: "query", schema: { type: "integer", default: 20, maximum: 100 }, description: "Nombre de resultats par page" },
         ],
@@ -139,6 +160,10 @@ const spec = {
                 projet: {
                   summary: "Creer un projet",
                   value: { title: "App de suivi de lectures", description: "Tracker les livres lus et en cours", tags: ["mobile", "lecture"], type: "PROJET" },
+                },
+                sousIdee: {
+                  summary: "Creer une sous-idee rattachee a un projet",
+                  value: { title: "Cours 1 - Fondamentaux", type: "NOTE", parentId: "cmq2md1fv000201o9ab1gvg5a" },
                 },
                 inspiration: {
                   summary: "Capturer une inspiration",
@@ -178,7 +203,7 @@ const spec = {
       ],
       get: {
         summary: "Obtenir une idee",
-        description: "Retourne le detail d'une idee par son ID.",
+        description: "Retourne le detail d'une idee par son ID, avec ses fichiers joints (attachments) et un apercu de ses sous-idees (children).",
         operationId: "getIdea",
         responses: {
           "200": {
@@ -212,6 +237,14 @@ const spec = {
                 updateTitle: {
                   summary: "Renommer",
                   value: { title: "Nouveau titre", tags: ["tag1", "tag2"] },
+                },
+                attachToParent: {
+                  summary: "Rattacher a un projet existant",
+                  value: { parentId: "cmq2md1fv000201o9ab1gvg5a" },
+                },
+                detachFromParent: {
+                  summary: "Detacher du parent (rendre independante)",
+                  value: { parentId: null },
                 },
               },
             },

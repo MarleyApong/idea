@@ -64,6 +64,9 @@ model Idea {
   tags        String[]
   type        IdeaType     @default(PROJET)
   status      IdeaStatus   @default(DRAFT)
+  parentId    String?
+  parent      Idea?        @relation("IdeaChildren", fields: [parentId], references: [id], onDelete: SetNull)
+  children    Idea[]       @relation("IdeaChildren")
   userId      String
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   attachments Attachment[]

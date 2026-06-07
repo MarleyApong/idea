@@ -2,7 +2,7 @@ import { prisma } from "@/shared/lib/prisma"
 import { NextRequest, NextResponse } from "next/server"
 import { hashApiKey } from "@/shared/lib/api-key"
 import { apiError } from "@/shared/lib/errors"
-import { IdeaType, IdeaStatus } from "@prisma/client"
+import { IdeaType, IdeaStatus, Prisma } from "@prisma/client"
 import { rateLimit, getIp, LIMITS } from "@/shared/lib/rate-limit"
 
 export async function resolveApiKey(req: NextRequest) {
@@ -49,18 +49,28 @@ export async function GET(req: NextRequest) {
   const search = searchParams.get("search") ?? ""
   const type = searchParams.get("type") ?? ""
   const status = searchParams.get("status") ?? ""
+  const parentId = searchParams.get("parentId") ?? ""
   const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10))
   const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") ?? "20", 10)))
+
+  let tagMatchIds: string[] = []
+  if (search) {
+    const tagMatches = await prisma.$queryRaw<{ id: string }[]>(
+      Prisma.sql`SELECT id FROM "Idea" WHERE "userId" = ${user.id} AND EXISTS (SELECT 1 FROM unnest(tags) AS t WHERE t ILIKE ${`%${search}%`})`
+    )
+    tagMatchIds = tagMatches.map(r => r.id)
+  }
 
   const where = {
     userId: user.id,
     ...(type && Object.values(IdeaType).includes(type as IdeaType) ? { type: type as IdeaType } : {}),
     ...(status && Object.values(IdeaStatus).includes(status as IdeaStatus) ? { status: status as IdeaStatus } : {}),
+    ...(parentId ? { parentId } : {}),
     ...(search ? {
       OR: [
         { title: { contains: search, mode: "insensitive" as const } },
         { description: { contains: search, mode: "insensitive" as const } },
-        { tags: { has: search } },
+        ...(tagMatchIds.length > 0 ? [{ id: { in: tagMatchIds } }] : []),
       ],
     } : {}),
   }
@@ -71,6 +81,7 @@ export async function GET(req: NextRequest) {
       orderBy: { createdAt: "desc" },
       skip: (page - 1) * limit,
       take: limit,
+      include: { attachments: true },
     }),
     prisma.idea.count({ where }),
   ])
@@ -96,7 +107,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => null)
   if (!body) return apiError("INVALID_BODY", "Corps JSON invalide")
 
-  const { title, description, tags, type, status } = body
+  const { title, description, tags, type, status, parentId: bodyParentId } = body
 
   if (!title?.trim()) return apiError("MISSING_TITLE", "Le titre est requis")
 
@@ -107,8 +118,10 @@ export async function POST(req: NextRequest) {
       tags: Array.isArray(tags) ? tags.map((t: string) => t.trim()).filter(Boolean) : [],
       type: Object.values(IdeaType).includes(type) ? type : IdeaType.PROJET,
       status: Object.values(IdeaStatus).includes(status) ? status : IdeaStatus.DRAFT,
+      parentId: bodyParentId ?? null,
       userId: user.id,
     },
+    include: { attachments: true },
   })
 
   return NextResponse.json(idea, {

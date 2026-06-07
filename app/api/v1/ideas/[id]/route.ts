@@ -20,7 +20,13 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     return apiError("RATE_LIMITED", "Limite de requetes atteinte pour cette cle API", 429)
 
   const { id } = await params
-  const idea = await prisma.idea.findUnique({ where: { id } })
+  const idea = await prisma.idea.findUnique({
+    where: { id },
+    include: {
+      attachments: true,
+      children: { select: { id: true, title: true, type: true, status: true, createdAt: true } },
+    },
+  })
 
   if (!idea || idea.userId !== user.id)
     return apiError("NOT_FOUND", "Idee introuvable", 404)
@@ -48,7 +54,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const body = await req.json().catch(() => null)
   if (!body) return apiError("INVALID_BODY", "Corps JSON invalide")
 
-  const { title, description, tags, type, status } = body
+  const { title, description, tags, type, status, parentId } = body
 
   if (title !== undefined && !title?.trim())
     return apiError("MISSING_TITLE", "Le titre ne peut pas etre vide")
@@ -61,6 +67,11 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       ...(tags !== undefined ? { tags: Array.isArray(tags) ? tags.map((t: string) => t.trim()).filter(Boolean) : [] } : {}),
       ...(type !== undefined && Object.values(IdeaType).includes(type) ? { type } : {}),
       ...(status !== undefined && Object.values(IdeaStatus).includes(status) ? { status } : {}),
+      ...(parentId !== undefined ? { parentId: parentId || null } : {}),
+    },
+    include: {
+      attachments: true,
+      children: { select: { id: true, title: true, type: true, status: true, createdAt: true } },
     },
   })
 

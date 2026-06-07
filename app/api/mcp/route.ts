@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/shared/lib/prisma"
 import { resolveApiKey } from "@/app/api/v1/ideas/route"
-import { IdeaType, IdeaStatus } from "@prisma/client"
+import { IdeaType, IdeaStatus, Prisma } from "@prisma/client"
 import { unlink } from "fs/promises"
 import { join } from "path"
 
@@ -14,9 +14,10 @@ const TOOLS = [
     inputSchema: {
       type: "object",
       properties: {
-        search: { type: "string", description: "Recherche dans le titre, description et tags" },
+        search: { type: "string", description: "Recherche partielle (insensible a la casse) dans le titre, description et tags" },
         type: { type: "string", enum: ["PROJET", "INSPIRATION", "RAPPEL", "NOTE", "AUTRE"], description: "Filtrer par type" },
         status: { type: "string", enum: ["DRAFT", "IN_PROGRESS", "DONE", "ARCHIVED"], description: "Filtrer par statut" },
+        parentId: { type: "string", description: "Ne lister que les sous-idées rattachées à cette idée" },
         limit: { type: "number", description: "Nombre de résultats (max 100, défaut 20)" },
       },
     },
@@ -44,6 +45,7 @@ const TOOLS = [
         type: { type: "string", enum: ["PROJET", "INSPIRATION", "RAPPEL", "NOTE", "AUTRE"], description: "Type d'idée (défaut: AUTRE)" },
         status: { type: "string", enum: ["DRAFT", "IN_PROGRESS", "DONE", "ARCHIVED"], description: "Statut (défaut: DRAFT)" },
         tags: { type: "array", items: { type: "string" }, description: "Tags pour catégoriser" },
+        parentId: { type: "string", description: "ID de l'idée parente, pour rattacher cette idée à un projet ou une note existante" },
       },
     },
   },
@@ -60,6 +62,7 @@ const TOOLS = [
         type: { type: "string", enum: ["PROJET", "INSPIRATION", "RAPPEL", "NOTE", "AUTRE"] },
         status: { type: "string", enum: ["DRAFT", "IN_PROGRESS", "DONE", "ARCHIVED"] },
         tags: { type: "array", items: { type: "string" } },
+        parentId: { type: "string", description: "ID de l'idée parente. Envoyer une chaîne vide pour détacher l'idée de son parent" },
       },
     },
   },
@@ -84,18 +87,28 @@ async function callTool(name: string, args: Record<string, unknown>, userId: str
       const search = args.search as string | undefined
       const type = args.type as IdeaType | undefined
       const status = args.status as IdeaStatus | undefined
+      const parentId = args.parentId as string | undefined
       const limit = Math.min(Number(args.limit ?? 20), 100)
+
+      let tagMatchIds: string[] = []
+      if (search) {
+        const tagMatches = await prisma.$queryRaw<{ id: string }[]>(
+          Prisma.sql`SELECT id FROM "Idea" WHERE "userId" = ${userId} AND EXISTS (SELECT 1 FROM unnest(tags) AS t WHERE t ILIKE ${`%${search}%`})`
+        )
+        tagMatchIds = tagMatches.map(r => r.id)
+      }
 
       const ideas = await prisma.idea.findMany({
         where: {
           userId,
           ...(type ? { type } : {}),
           ...(status ? { status } : {}),
+          ...(parentId ? { parentId } : {}),
           ...(search ? {
             OR: [
               { title: { contains: search, mode: "insensitive" } },
               { description: { contains: search, mode: "insensitive" } },
-              { tags: { has: search } },
+              ...(tagMatchIds.length > 0 ? [{ id: { in: tagMatchIds } }] : []),
             ],
           } : {}),
         },
@@ -109,13 +122,19 @@ async function callTool(name: string, args: Record<string, unknown>, userId: str
     }
 
     case "get_idea": {
-      const idea = await prisma.idea.findUnique({ where: { id: args.id as string } })
+      const idea = await prisma.idea.findUnique({
+        where: { id: args.id as string },
+        include: {
+          attachments: true,
+          children: { select: { id: true, title: true, type: true, status: true, createdAt: true } },
+        },
+      })
       if (!idea || idea.userId !== userId) return "Idée introuvable."
-      const attachments = await prisma.attachment.findMany({ where: { ideaId: idea.id } })
-      return JSON.stringify({ ...idea, attachments }, null, 2)
+      return JSON.stringify(idea, null, 2)
     }
 
     case "create_idea": {
+      const parentId = args.parentId as string | undefined
       const idea = await prisma.idea.create({
         data: {
           title: (args.title as string).trim(),
@@ -123,6 +142,7 @@ async function callTool(name: string, args: Record<string, unknown>, userId: str
           type: (args.type as IdeaType) ?? "AUTRE",
           status: (args.status as IdeaStatus) ?? "DRAFT",
           tags: Array.isArray(args.tags) ? (args.tags as string[]).map((t) => t.trim()).filter(Boolean) : [],
+          parentId: parentId || null,
           userId,
         },
       })
@@ -141,6 +161,7 @@ async function callTool(name: string, args: Record<string, unknown>, userId: str
           ...(updates.type !== undefined && Object.values(IdeaType).includes(updates.type as IdeaType) ? { type: updates.type as IdeaType } : {}),
           ...(updates.status !== undefined && Object.values(IdeaStatus).includes(updates.status as IdeaStatus) ? { status: updates.status as IdeaStatus } : {}),
           ...(updates.tags !== undefined ? { tags: (updates.tags as string[]).map((t) => t.trim()).filter(Boolean) } : {}),
+          ...(updates.parentId !== undefined ? { parentId: (updates.parentId as string) || null } : {}),
         },
       })
       return `Idée mise à jour.\nTitre : ${idea.title} · ${idea.type} · ${idea.status}`

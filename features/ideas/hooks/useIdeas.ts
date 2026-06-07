@@ -137,6 +137,7 @@ function buildTempIdea(payload: ReturnType<typeof extractPayload>): Idea {
     type: (payload.ideaType as IdeaType) ?? "PROJET",
     tags: payload.tags ?? [],
     status: "DRAFT" as IdeaStatus,
+    parentId: null,
     userId: "",
     createdAt: new Date(),
     updatedAt: new Date(),
